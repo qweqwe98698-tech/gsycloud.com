@@ -1,0 +1,28 @@
+---
+import SectionArchive from '@components/SectionArchive.astro';
+import { AI_PILLARS } from '@data/pillars';
+---
+
+<SectionArchive
+  collection="ai"
+  pageTitle="AI 网络环境指南｜ChatGPT、Claude、Gemini 访问指南｜GSY Cloud"
+  intro="ChatGPT、Claude、Gemini 等 AI 工具对访问地区与 IP 环境有各自的要求。本栏目以解决实际问题为主：地区限制、IP 环境、登录异常、风控触发与节点选择，而不是简单的推荐列表。"
+>
+  <div slot="before-list" class="mt-10">
+    <h2 class="text-lg font-bold text-ink-900 dark:text-white">按 AI 平台浏览</h2>
+    <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        AI_PILLARS.map((pillar) => (
+          <a
+            href={`/ai/${pillar.slug}/`}
+            class="rounded-lg border border-ink-100 p-4 transition-colors duration-150 hover:border-brand-300 hover:bg-brand-50/50 dark:border-ink-700/40 dark:hover:border-brand-700 dark:hover:bg-brand-900/20"
+          >
+            <span class="font-semibold text-ink-900 dark:text-white">{pillar.title}</span>
+            <span class="mt-1 line-clamp-2 block text-sm text-ink-500">{pillar.description}</span>
+          </a>
+        ))
+      }
+    </div>
+    <h2 class="mt-8 text-lg font-bold text-ink-900 dark:text-white">全部文章</h2>
+  </div>
+</SectionArchive>

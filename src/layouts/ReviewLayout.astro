@@ -1,0 +1,307 @@
+---
+/**
+ * 品牌评测页布局。
+ *
+ * 结构化数据（价格、流量、线路、协议、解锁、客户端、优惠码、注册入口、测速图）
+ * 全部来自 brands.ts，由布局渲染；Markdown 正文只负责分析与判断。
+ * 这样可以保证 16 篇评测的参数绝对一致，也避免正文中出现过期或不一致的数字。
+ */
+import type { MarkdownHeading } from 'astro';
+import { getEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumb from '@components/Breadcrumb.astro';
+import Badge from '@components/Badge.astro';
+import TableOfContents from '@components/TableOfContents.astro';
+import FaqSection from '@components/FaqSection.astro';
+import RelatedPosts from '@components/RelatedPosts.astro';
+import TagList from '@components/TagList.astro';
+import BrandCta from '@components/BrandCta.astro';
+import SpeedTestFigure from '@components/SpeedTestFigure.astro';
+import AffiliateDisclosure from '@components/AffiliateDisclosure.astro';
+import PrevNextNav from '@components/PrevNextNav.astro';
+import { SITE } from '@utils/site';
+import { postUrl } from '@utils/url';
+import { formatDate, isoDate, readingTime, getAdjacent } from '@utils/content';
+import type { ContentType, DataStatus } from '@utils/content';
+import { articleSchema, breadcrumbSchema, faqSchema, personSchema } from '@utils/schema';
+import type { Crumb } from '@utils/schema';
+import { resolveRelated } from '@utils/related';
+import { AIRPORT_BRANDS, getBrand, sortHouseFirstThenValue, BRAND_TAG_LABEL, UNLOCK_LABEL } from '@data/airports/brands';
+
+interface ReviewData {
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate: Date;
+  category: string;
+  tags: string[];
+  author: string;
+  relatedSlugs: string[];
+  faq: { question: string; answer: string }[];
+  sources: { name: string; url: string }[];
+  contentType: ContentType;
+  dataStatus: DataStatus;
+}
+
+interface Props {
+  id: string;
+  data: ReviewData;
+  headings: MarkdownHeading[];
+  body: string;
+}
+
+const { id, data, headings, body } = Astro.props;
+
+const brand = getBrand(id);
+if (!brand) {
+  throw new Error(
+    `评测 /reviews/${id}/ 在品牌库中找不到对应品牌，请检查 src/data/airports/brands.ts 的 slug 是否一致`,
+  );
+}
+
+const path = postUrl('reviews', id);
+const crumbs: Crumb[] = [
+  { name: '首页', path: '/' },
+  { name: '机场评测', path: '/reviews/' },
+  { name: brand.name, path },
+];
+
+const authorEntry = await getEntry('authors', data.author);
+const authorName = authorEntry?.data.name ?? 'GSY Cloud 编辑部';
+const minutes = readingTime(body);
+const related = await resolveRelated(data.relatedSlugs);
+
+// 按品牌库的价格顺序（与 /brands/、排行榜一致）导航，构成比价式的浏览路径
+const brandsByPrice = [...AIRPORT_BRANDS].sort(sortHouseFirstThenValue);
+const { prev: prevBrand, next: nextBrand } = getAdjacent(brandsByPrice, id, (b) => b.slug);
+const prevItem = prevBrand ? { title: `${prevBrand.name}（¥${prevBrand.minPrice} 起）`, href: postUrl('reviews', prevBrand.slug) } : null;
+const nextItem = nextBrand ? { title: `${nextBrand.name}（¥${nextBrand.minPrice} 起）`, href: postUrl('reviews', nextBrand.slug) } : null;
+
+const schema: object[] = [
+  breadcrumbSchema(crumbs),
+  articleSchema({
+    title: data.title,
+    description: data.description,
+    path,
+    pubDate: data.pubDate,
+    updatedDate: data.updatedDate,
+    authorName,
+    authorId: data.author,
+  }),
+];
+if (authorEntry) {
+  schema.push(personSchema(authorEntry.data));
+}
+if (data.faq.length > 0) schema.push(faqSchema(data.faq));
+
+const factRows = [
+  { label: '最低套餐', value: `¥${brand.minPrice} / ${brand.minTraffic}G（${brand.minPriceCycle}）` },
+  { label: '每 GB 单价', value: `¥${brand.pricePerGb.toFixed(2)}` },
+  { label: '线路类型', value: brand.lines.join(' / ') },
+  { label: '协议', value: brand.protocols.length > 0 ? brand.protocols.join(' / ') : '暂未核实' },
+  { label: '开业时间', value: brand.established ?? '暂未核实' },
+  { label: 'AI 工具', value: UNLOCK_LABEL[brand.aiSupport] },
+  { label: '流媒体', value: UNLOCK_LABEL[brand.streamingSupport] },
+  { label: '客户端', value: brand.clients.join('、') },
+  { label: '订阅导入', value: brand.subscriptionImport ? '支持（需联系在线客服）' : '暂未核实' },
+  { label: '不限时套餐', value: brand.payAsYouGo ? '提供' : '未提供' },
+  { label: '优惠码', value: brand.couponCode ?? '暂无' },
+];
+---
+
+<BaseLayout
+  title={`${data.title}｜${SITE.name}`}
+  description={data.description}
+  path={path}
+  ogType="article"
+  article={{
+    publishedTime: data.pubDate.toISOString(),
+    modifiedTime: data.updatedDate.toISOString(),
+    author: authorName,
+  }}
+  schema={schema}
+>
+  <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+    <Breadcrumb crumbs={crumbs} />
+
+    <div class="mt-6 grid gap-10 lg:grid-cols-[minmax(0,1fr)_260px]">
+      <article data-pagefind-body>
+        <header>
+          <div class="flex flex-wrap items-center gap-2">
+            <Badge contentType={data.contentType} />
+            <Badge dataStatus={data.dataStatus} />
+            {
+              brand.house && (
+                <span class="inline-flex items-center rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-semibold text-brand-700 ring-1 ring-inset ring-brand-200 dark:bg-brand-900/40 dark:text-brand-300 dark:ring-brand-800">
+                  本站自有品牌
+                </span>
+              )
+            }
+          </div>
+          <h1 class="mt-3 text-3xl font-bold leading-tight tracking-tight text-ink-900 sm:text-4xl dark:text-white">
+            {data.title}
+          </h1>
+          <p class="mt-3 text-base leading-relaxed text-ink-500">{data.description}</p>
+          <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-ink-500">
+            <span>{authorName}</span>
+            <span>
+              发布于 <time datetime={isoDate(data.pubDate)}>{formatDate(data.pubDate)}</time>
+            </span>
+            <span>
+              最近检查 <time datetime={isoDate(data.updatedDate)}>{formatDate(data.updatedDate)}</time>
+            </span>
+            <span>约 {minutes} 分钟阅读</span>
+          </div>
+        </header>
+
+        <div class="mt-6">
+          <AffiliateDisclosure compact />
+        </div>
+
+        <!-- 品牌资料卡：数据来自品牌库，与全站同步 -->
+        <section
+          class="not-prose mt-8 rounded-lg border border-ink-100 bg-ink-50 p-5 dark:border-ink-700/40 dark:bg-ink-700/15"
+          aria-label={`${brand.name}基本资料`}
+        >
+          <h2 class="text-lg font-bold text-ink-900 dark:text-white">{brand.name}基本资料</h2>
+          <p class="mt-1 text-sm text-ink-500">{brand.tagline}</p>
+          <dl class="mt-4 grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
+            {
+              factRows.map((row) => (
+                <div class="border-b border-ink-100 pb-2 dark:border-ink-700/40">
+                  <dt class="text-xs text-ink-500">{row.label}</dt>
+                  <dd class="mt-0.5 text-sm font-medium text-ink-900 dark:text-white">{row.value}</dd>
+                </div>
+              ))
+            }
+          </dl>
+          <div class="mt-4 flex flex-wrap gap-1.5">
+            {
+              brand.tags.map((tag) => (
+                <span class="rounded-full bg-white px-2 py-0.5 text-xs text-ink-500 ring-1 ring-inset ring-ink-100 dark:bg-ink-900 dark:ring-ink-700/40">
+                  {BRAND_TAG_LABEL[tag]}
+                </span>
+              ))
+            }
+          </div>
+          <div class="mt-5">
+            <BrandCta brand={brand} placement="review-top" size="md" />
+            {
+              brand.couponNote && (
+                <p class="mt-2 text-xs text-ink-500">优惠说明：{brand.couponNote}（以官网结算页面为准）</p>
+              )
+            }
+          </div>
+        </section>
+
+        <div class="lg:hidden">
+          <div class="mt-6 rounded-lg border border-ink-100 bg-white p-4 dark:border-ink-700/40 dark:bg-ink-900">
+            <TableOfContents headings={headings} />
+          </div>
+        </div>
+
+        <div
+          class="prose prose-slate mt-8 max-w-none dark:prose-invert prose-headings:scroll-mt-24 prose-a:text-brand-600 prose-a:decoration-brand-300 hover:prose-a:text-brand-700 dark:prose-a:text-brand-400"
+        >
+          <slot />
+        </div>
+
+        <SpeedTestFigure
+          brand={brand}
+          caption={`${brand.name}节点测速面板导出图，覆盖香港、台湾、新加坡、日本、美国等地区节点的延迟 RTT、HTTP 延迟与速度数据。`}
+        />
+
+        <!-- 优势 / 注意事项：来自品牌库，保证与品牌库页面一致 -->
+        <section class="not-prose mt-10 grid gap-5 sm:grid-cols-2" aria-label="优势与注意事项">
+          <div class="rounded-lg border border-ink-100 p-5 dark:border-ink-700/40">
+            <h2 class="font-bold text-ink-900 dark:text-white">主要优势</h2>
+            <ul class="mt-3 space-y-2 text-sm leading-relaxed text-ink-700 dark:text-ink-300">
+              {
+                brand.advantages.map((item) => (
+                  <li class="flex gap-2">
+                    <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500" aria-hidden="true" />
+                    {item}
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+          <div class="rounded-lg border border-amber-200 bg-amber-50/50 p-5 dark:border-amber-800 dark:bg-amber-900/10">
+            <h2 class="font-bold text-ink-900 dark:text-white">使用注意事项</h2>
+            <ul class="mt-3 space-y-2 text-sm leading-relaxed text-ink-700 dark:text-ink-300">
+              {
+                brand.cautions.map((item) => (
+                  <li class="flex gap-2">
+                    <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" aria-hidden="true" />
+                    {item}
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </section>
+
+        <section class="not-prose mt-6 rounded-lg border border-ink-100 p-5 dark:border-ink-700/40" aria-label="适合人群">
+          <h2 class="font-bold text-ink-900 dark:text-white">适合哪些用户</h2>
+          <ul class="mt-3 flex flex-wrap gap-2">
+            {
+              brand.targetUsers.map((user) => (
+                <li class="rounded-full bg-ink-50 px-3 py-1 text-sm text-ink-700 dark:bg-ink-700/30 dark:text-ink-300">
+                  {user}
+                </li>
+              ))
+            }
+          </ul>
+          <div class="mt-5 border-t border-ink-100 pt-4 dark:border-ink-700/40">
+            <BrandCta brand={brand} placement="review-bottom" size="md" />
+          </div>
+        </section>
+
+        <TagList tags={data.tags} />
+        <FaqSection faq={data.faq} title={`关于${brand.name}的常见问题`} />
+        <RelatedPosts links={related} />
+
+        {
+          data.sources.length > 0 && (
+            <section class="mt-10" aria-label="参考资料">
+              <h2 class="text-base font-semibold text-ink-900 dark:text-white">参考资料</h2>
+              <ul class="mt-2 list-inside list-disc space-y-1 text-sm text-ink-500">
+                {data.sources.map((source) => (
+                  <li>
+                    <a href={source.url} rel="nofollow noopener" target="_blank" class="text-brand-600 hover:underline dark:text-brand-400">
+                      {source.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
+
+        <PrevNextNav prev={prevItem} next={nextItem} prevLabel="更便宜的档位" nextLabel="更贵的档位" />
+      </article>
+
+      <aside class="hidden lg:block" aria-label="侧边栏">
+        <div class="sticky top-24 space-y-6">
+          <div class="rounded-lg border border-ink-100 p-4 dark:border-ink-700/40">
+            <p class="text-xs text-ink-500">最低套餐</p>
+            <p class="mt-1 text-2xl font-bold text-brand-600 dark:text-brand-400">¥{brand.minPrice}</p>
+            <p class="text-xs text-ink-500">{brand.minTraffic}G · {brand.minPriceCycle}</p>
+            <div class="mt-3">
+              <BrandCta brand={brand} placement="review-sidebar" />
+            </div>
+          </div>
+          <TableOfContents headings={headings} />
+          <div class="rounded-lg border border-ink-100 p-4 text-sm dark:border-ink-700/40">
+            <p class="font-semibold text-ink-900 dark:text-white">继续对比</p>
+            <ul class="mt-2 space-y-1.5">
+              <li><a href="/brands/" class="text-ink-500 hover:text-brand-600">机场品牌库</a></li>
+              <li><a href="/airport/ranking/" class="text-ink-500 hover:text-brand-600">2026 机场排行榜</a></li>
+              <li><a href="/airport/coupon/" class="text-ink-500 hover:text-brand-600">优惠码汇总</a></li>
+            </ul>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>

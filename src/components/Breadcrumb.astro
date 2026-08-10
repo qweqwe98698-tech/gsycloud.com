@@ -1,0 +1,44 @@
+---
+import type { Crumb } from '@utils/schema';
+import { normalizePath } from '@utils/url';
+
+interface Props {
+  crumbs: Crumb[];
+}
+const { crumbs } = Astro.props;
+---
+
+<nav aria-label="面包屑导航" class="text-sm text-ink-500">
+  <ol class="flex flex-wrap items-center gap-1">
+    {
+      crumbs.map((crumb, i) => (
+        <li class="flex items-center gap-1">
+          {i > 0 && (
+            <svg
+              class="h-3.5 w-3.5 text-ink-300"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <path d="m9 6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          )}
+          {i === crumbs.length - 1 ? (
+            <span aria-current="page" class="text-ink-700 dark:text-ink-300">
+              {crumb.name}
+            </span>
+          ) : (
+            <a
+              href={normalizePath(crumb.path)}
+              class="transition-colors duration-150 hover:text-brand-600"
+            >
+              {crumb.name}
+            </a>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>

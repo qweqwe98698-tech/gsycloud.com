@@ -1,0 +1,24 @@
+---
+/**
+ * GEO 答案模块：问题 → 直接答案 → 展开说明。
+ * 结构对生成式搜索友好（结论前置），同时是页面上真实可见的内容。
+ */
+interface Props {
+  question: string;
+  answer: string;
+  /** 标题层级，专题页内通常为 h3 */
+  level?: 2 | 3;
+  id?: string;
+}
+const { question, answer, level = 3, id } = Astro.props;
+const Heading = `h${level}` as 'h2' | 'h3';
+---
+
+<div
+  class="reveal border-l-2 border-brand-200 pl-4 transition-colors duration-200 hover:border-brand-500 dark:border-brand-800 dark:hover:border-brand-400"
+  id={id}
+>
+  <Heading class="text-base font-semibold text-ink-900 dark:text-white">{question}</Heading>
+  <p class="mt-1.5 text-sm leading-relaxed text-ink-700 dark:text-ink-300">{answer}</p>
+  <slot />
+</div>

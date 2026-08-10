@@ -1,0 +1,41 @@
+---
+import type { AirportBrand } from '@data/airports/brands';
+
+interface Props {
+  brand: AirportBrand;
+  /** 转化位置标识，便于日后区分不同位置的点击 */
+  placement?: string;
+  size?: 'sm' | 'md';
+  showCoupon?: boolean;
+}
+
+const { brand, placement = 'card', size = 'sm', showCoupon = true } = Astro.props;
+---
+
+<div class="flex flex-wrap items-center gap-2">
+  <a
+    href={brand.affiliateUrl}
+    rel="sponsored nofollow noopener"
+    target="_blank"
+    data-cta-placement={placement}
+    data-cta-brand={brand.slug}
+    class:list={[
+      'inline-flex items-center gap-1.5 rounded-md bg-brand-600 font-semibold text-white transition-colors duration-150 hover:bg-brand-700',
+      size === 'md' ? 'px-5 py-2.5 text-sm' : 'px-4 py-2 text-sm',
+    ]}
+  >
+    前往{brand.name}官网
+    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <span class="sr-only">（推广链接，将在新窗口打开）</span>
+  </a>
+  {
+    showCoupon && brand.couponCode && (
+      <span class="inline-flex items-center gap-1.5 rounded-md border border-dashed border-brand-300 bg-brand-50 px-3 py-2 text-xs font-medium text-brand-700 dark:border-brand-700 dark:bg-brand-900/30 dark:text-brand-300">
+        优惠码
+        <code class="font-mono font-bold">{brand.couponCode}</code>
+      </span>
+    )
+  }
+</div>

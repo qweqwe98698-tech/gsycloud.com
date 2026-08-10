@@ -1,0 +1,39 @@
+---
+import ArchiveLayout from '@layouts/ArchiveLayout.astro';
+import { TUTORIAL_PILLARS } from '@data/pillars';
+import { getPublished, toArchiveItem } from '@utils/collections';
+import { SITE } from '@utils/site';
+
+export async function getStaticPaths() {
+  return TUTORIAL_PILLARS.map((pillar) => ({
+    params: { pillar: pillar.slug },
+    props: { pillar },
+  }));
+}
+
+const { pillar } = Astro.props;
+const entries = await getPublished('tutorials');
+const items = entries
+  .filter((entry) => entry.data.pillar === pillar.slug)
+  .map((entry) => toArchiveItem('tutorials', entry));
+---
+
+<ArchiveLayout
+  title={pillar.title}
+  pageTitle={`${pillar.title}｜${pillar.name} 使用与配置指南｜${SITE.name}`}
+  description={pillar.description}
+  path={`/tutorials/${pillar.slug}/`}
+  intro={pillar.intro}
+  items={items}
+  midCrumbs={[{ name: '客户端教程', path: '/tutorials/' }]}
+>
+  <div slot="after-list" class="prose prose-slate mt-12 max-w-3xl dark:prose-invert">
+    <h2>配套内容</h2>
+    <p>
+      配置完成后，如果遇到连接问题，请优先查看<a href="/troubleshooting/">故障排查中心</a>；
+      想理解客户端背后的协议与线路原理，可以阅读<a href="/protocols/">协议知识</a>与
+      <a href="/network/">线路与网络知识</a>；还没有可用订阅的用户可以先了解
+      <a href="/airport/beginners/">如何选择机场</a>或 <a href="/services/">GSY Cloud 服务</a>。
+    </p>
+  </div>
+</ArchiveLayout>

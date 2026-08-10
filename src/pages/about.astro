@@ -1,0 +1,55 @@
+---
+import PageLayout from '@layouts/PageLayout.astro';
+import { webPageSchema } from '@utils/schema';
+
+const description =
+  'GSY Cloud（光速云）是面向中文用户的代理网络服务与知识平台，提供机场选择参考、客户端教程、协议与线路知识、故障排查与风险预警内容。';
+---
+
+<PageLayout
+  title="关于我们"
+  pageTitle="关于 GSY Cloud｜光速云网络指南"
+  description={description}
+  path="/about/"
+  intro="让代理网络更容易理解、选择和使用。"
+  schema={[webPageSchema('AboutPage', { name: '关于 GSY Cloud', description, path: '/about/' })]}
+>
+  <h2>GSY Cloud 是什么</h2>
+  <p>
+    GSY Cloud（中文名：光速云网络指南）是一个面向中文用户的代理网络品牌与知识平台，围绕
+    <strong>gsycloud.com</strong> 提供两类内容：
+  </p>
+  <ul>
+    <li><strong>品牌服务</strong>：GSY Cloud 自有的代理网络服务说明、套餐结构与官方公告，见<a href="/services/">服务介绍</a>；</li>
+    <li><strong>知识内容</strong>：机场选择参考、客户端教程、代理协议与线路知识、AI 与流媒体网络环境、故障排查与风险预警。</li>
+  </ul>
+
+  <h2>网站内容方向</h2>
+  <p>本站内容按用户的完整使用路径组织：</p>
+  <ol>
+    <li>了解基础概念（<a href="/nodes/">节点知识</a>、<a href="/protocols/">协议知识</a>）；</li>
+    <li>选择合适的机场服务（<a href="/airport/">机场推荐</a>、<a href="/reviews/">机场评测</a>）；</li>
+    <li>完成客户端配置（<a href="/tutorials/">客户端教程</a>）；</li>
+    <li>解决使用中的问题（<a href="/troubleshooting/">故障排查</a>、<a href="/ai/">AI 网络</a>、<a href="/streaming/">流媒体</a>）；</li>
+    <li>规避常见风险（<a href="/risk/">风险预警</a>）。</li>
+  </ol>
+
+  <h2>官方内容与编辑内容的区分</h2>
+  <p>
+    GSY Cloud 同时是服务品牌与内容平台，因此站内明确区分「GSY Cloud
+    官方」（品牌服务、公告）与「知识指南 /
+    编辑推荐」（教程、知识、比较类内容），并在每篇文章标注内容类型与数据状态。我们不会把自己的品牌宣传包装成独立第三方评测，详见<a
+      href="/editorial-policy/">编辑政策</a>。
+  </p>
+
+  <h2>内容更新机制</h2>
+  <p>
+    时效性内容（套餐信息、客户端教程、AI 服务规则）会按变化频率复查更新，每篇文章展示发布时间与最近更新时间；只有正文实际变化时才会更新时间标注。
+  </p>
+
+  <h2>联系我们</h2>
+  <p>
+    内容纠错、合作或服务支持，请通过<a href="/contact/">联系页面</a>与我们取得联系。团队介绍见<a
+      href="/authors/">作者团队</a>。
+  </p>
+</PageLayout>

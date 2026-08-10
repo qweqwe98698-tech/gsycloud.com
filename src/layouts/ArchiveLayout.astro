@@ -1,0 +1,94 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumb from '@components/Breadcrumb.astro';
+import ArticleCard from '@components/ArticleCard.astro';
+import { SITE } from '@utils/site';
+import { normalizePath } from '@utils/url';
+import { breadcrumbSchema, collectionPageSchema } from '@utils/schema';
+import type { Crumb } from '@utils/schema';
+import type { ContentType, DataStatus } from '@utils/content';
+
+export interface ArchiveItem {
+  title: string;
+  description: string;
+  href: string;
+  updatedDate: Date;
+  contentType?: ContentType;
+  dataStatus?: DataStatus;
+  category?: string;
+}
+
+interface Props {
+  title: string;
+  pageTitle?: string;
+  description: string;
+  path: string;
+  intro?: string;
+  items: ArchiveItem[];
+  midCrumbs?: Crumb[];
+  noindex?: boolean;
+  /** 额外的 JSON-LD 节点（如作者主页需要附加 Person 实体） */
+  extraSchema?: object[];
+}
+
+const {
+  title,
+  pageTitle,
+  description,
+  path,
+  intro,
+  items,
+  midCrumbs = [],
+  noindex,
+  extraSchema = [],
+} = Astro.props;
+
+const crumbs: Crumb[] = [{ name: '首页', path: '/' }, ...midCrumbs, { name: title, path }];
+
+const schema = [
+  breadcrumbSchema(crumbs),
+  collectionPageSchema({
+    name: title,
+    description,
+    path,
+    items: items.map((item) => ({ name: item.title, path: item.href })),
+  }),
+  ...extraSchema,
+];
+---
+
+<BaseLayout
+  title={pageTitle ?? `${title}｜${SITE.name}`}
+  description={description}
+  path={normalizePath(path)}
+  schema={schema}
+  noindex={noindex}
+>
+  <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+    <Breadcrumb crumbs={crumbs} />
+    <header class="mt-6 max-w-3xl">
+      <h1 class="text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl dark:text-white">
+        {title}
+      </h1>
+      {intro && <p class="mt-3 text-base leading-relaxed text-ink-500">{intro}</p>}
+    </header>
+
+    <slot name="before-list" />
+
+    {
+      items.length > 0 ? (
+        <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {items.map((item) => (
+            <ArticleCard {...item} />
+          ))}
+        </div>
+      ) : (
+        <p class="mt-8 rounded-lg border border-ink-100 bg-ink-50 px-5 py-8 text-center text-sm text-ink-500 dark:border-ink-700/40 dark:bg-ink-900">
+          本栏目内容正在整理中，欢迎先浏览其他栏目。
+        </p>
+      )
+    }
+
+    <slot name="after-list" />
+  </div>
+</BaseLayout>

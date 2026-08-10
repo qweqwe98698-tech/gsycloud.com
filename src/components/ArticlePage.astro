@@ -1,0 +1,44 @@
+---
+/**
+ * 通用文章页组件：各栏目 [...slug].astro 复用。
+ * 自动处理 pillar 中间面包屑（教程 / AI 专题）。
+ */
+import { render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import ArticleLayout from '@layouts/ArticleLayout.astro';
+import type { ContentCollectionKey } from '@utils/collections';
+import { getPillar } from '@data/pillars';
+import { SECTIONS } from '@utils/site';
+import type { Crumb } from '@utils/schema';
+
+interface Props {
+  collection: ContentCollectionKey;
+  entry: CollectionEntry<ContentCollectionKey>;
+}
+
+const { collection, entry } = Astro.props;
+const { Content, headings } = await render(entry);
+
+const section = SECTIONS[collection];
+let midCrumbs: Crumb[] | undefined;
+if (section) {
+  midCrumbs = [{ name: section.name, path: `/${collection}/` }];
+  if (entry.data.pillar) {
+    const pillar = getPillar(collection, entry.data.pillar);
+    if (pillar) {
+      midCrumbs.push({ name: pillar.title, path: `/${collection}/${pillar.slug}/` });
+    }
+  }
+}
+---
+
+<ArticleLayout
+  collection={collection}
+  id={entry.id}
+  data={entry.data}
+  headings={headings}
+  body={entry.body ?? ''}
+  midCrumbs={midCrumbs}
+>
+  <Content />
+</ArticleLayout>

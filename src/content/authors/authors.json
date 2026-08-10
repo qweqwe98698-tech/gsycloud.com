@@ -1,0 +1,16 @@
+[
+  {
+    "id": "gsycloud-editorial",
+    "name": "GSY Cloud 编辑部",
+    "role": "内容团队",
+    "bio": "GSY Cloud 编辑部负责站内机场选择参考、客户端教程与网络知识内容的撰写与复查，遵循站内编辑政策，区分实测、参考与示例信息。",
+    "expertise": ["机场与代理服务", "客户端配置", "网络故障排查"]
+  },
+  {
+    "id": "gsycloud-network",
+    "name": "GSY Cloud 技术组",
+    "role": "网络技术",
+    "bio": "GSY Cloud 技术组专注代理协议、线路架构与网络基础知识内容，负责协议知识库与线路知识栏目的技术审核。",
+    "expertise": ["代理协议", "IPLC/IEPL 线路", "DNS 与网络基础"]
+  }
+]

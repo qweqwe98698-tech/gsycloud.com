@@ -1,0 +1,52 @@
+---
+import SectionArchive from '@components/SectionArchive.astro';
+import { TUTORIAL_PILLARS } from '@data/pillars';
+
+const clientPillars = TUTORIAL_PILLARS.filter((p) =>
+  ['clash', 'mihomo', 'shadowrocket', 'v2rayn', 'sing-box'].includes(p.slug),
+);
+const devicePillars = TUTORIAL_PILLARS.filter((p) =>
+  ['windows', 'macos', 'android', 'ios'].includes(p.slug),
+);
+---
+
+<SectionArchive
+  collection="tutorials"
+  pageTitle="客户端教程｜Clash、Shadowrocket、v2rayN 完整教程｜GSY Cloud"
+  intro="从下载安装、导入订阅、选择节点，到系统代理、规则模式、TUN 与 DNS 设置，本栏目按客户端与设备平台整理完整的使用路径，每一步都可以按图索骥。"
+>
+  <div slot="before-list" class="mt-10 space-y-8">
+    <section aria-label="按客户端浏览">
+      <h2 class="text-lg font-bold text-ink-900 dark:text-white">按客户端浏览</h2>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          clientPillars.map((pillar) => (
+            <a
+              href={`/tutorials/${pillar.slug}/`}
+              class="rounded-lg border border-ink-100 p-4 transition-colors duration-150 hover:border-brand-300 hover:bg-brand-50/50 dark:border-ink-700/40 dark:hover:border-brand-700 dark:hover:bg-brand-900/20"
+            >
+              <span class="font-semibold text-ink-900 dark:text-white">{pillar.title}</span>
+              <span class="mt-1 line-clamp-2 block text-sm text-ink-500">{pillar.description}</span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+    <section aria-label="按设备平台浏览">
+      <h2 class="text-lg font-bold text-ink-900 dark:text-white">按设备平台浏览</h2>
+      <div class="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {
+          devicePillars.map((pillar) => (
+            <a
+              href={`/tutorials/${pillar.slug}/`}
+              class="rounded-lg border border-ink-100 p-4 text-center font-semibold text-ink-900 transition-colors duration-150 hover:border-brand-300 hover:bg-brand-50/50 dark:border-ink-700/40 dark:text-white dark:hover:border-brand-700 dark:hover:bg-brand-900/20"
+            >
+              {pillar.name}
+            </a>
+          ))
+        }
+      </div>
+    </section>
+    <h2 class="text-lg font-bold text-ink-900 dark:text-white">全部教程</h2>
+  </div>
+</SectionArchive>

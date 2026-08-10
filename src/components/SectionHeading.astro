@@ -1,0 +1,28 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  moreHref?: string;
+  moreLabel?: string;
+}
+const { title, description, moreHref, moreLabel = '查看全部' } = Astro.props;
+---
+
+<div class="flex items-end justify-between gap-4">
+  <div>
+    <h2 class="text-xl font-bold tracking-tight text-ink-900 sm:text-2xl dark:text-white">
+      {title}
+    </h2>
+    {description && <p class="mt-1.5 text-sm text-ink-500">{description}</p>}
+  </div>
+  {
+    moreHref && (
+      <a
+        href={moreHref}
+        class="shrink-0 text-sm font-medium text-brand-600 transition-colors duration-150 hover:text-brand-700 dark:text-brand-400"
+      >
+        {moreLabel} →
+      </a>
+    )
+  }
+</div>

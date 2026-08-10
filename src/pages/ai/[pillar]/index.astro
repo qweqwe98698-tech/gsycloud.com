@@ -1,0 +1,39 @@
+---
+import ArchiveLayout from '@layouts/ArchiveLayout.astro';
+import { AI_PILLARS } from '@data/pillars';
+import { getPublished, toArchiveItem } from '@utils/collections';
+import { SITE } from '@utils/site';
+
+export async function getStaticPaths() {
+  return AI_PILLARS.map((pillar) => ({
+    params: { pillar: pillar.slug },
+    props: { pillar },
+  }));
+}
+
+const { pillar } = Astro.props;
+const entries = await getPublished('ai');
+const items = entries
+  .filter((entry) => entry.data.pillar === pillar.slug)
+  .map((entry) => toArchiveItem('ai', entry));
+---
+
+<ArchiveLayout
+  title={pillar.title}
+  pageTitle={`${pillar.title}｜${pillar.name} 访问与节点指南｜${SITE.name}`}
+  description={pillar.description}
+  path={`/ai/${pillar.slug}/`}
+  intro={pillar.intro}
+  items={items}
+  midCrumbs={[{ name: 'AI 网络', path: '/ai/' }]}
+>
+  <div slot="after-list" class="prose prose-slate mt-12 max-w-3xl dark:prose-invert">
+    <h2>配套内容</h2>
+    <p>
+      AI 工具的访问问题多数与 IP 环境和节点地区有关，建议配合阅读
+      <a href="/network/native-ip/">原生 IP 是什么</a>；连接类故障请查看
+      <a href="/troubleshooting/">故障排查中心</a>；需要为 AI 场景选择机场可参考
+      <a href="/airport/">机场推荐</a>。
+    </p>
+  </div>
+</ArchiveLayout>

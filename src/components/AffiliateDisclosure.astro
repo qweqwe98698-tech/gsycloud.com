@@ -1,0 +1,30 @@
+---
+/**
+ * 推广关系披露。
+ * 出现在所有含推广链接的页面，满足搜索引擎对 Affiliate 内容的披露要求，
+ * 同时明确标识本站自有品牌，避免把自有品牌包装成第三方中立评测。
+ */
+interface Props {
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+---
+
+<aside
+  class:list={[
+    'rounded-lg border border-ink-100 bg-ink-50 text-ink-500 dark:border-ink-700/40 dark:bg-ink-700/20',
+    compact ? 'px-4 py-3 text-xs' : 'px-5 py-4 text-sm',
+  ]}
+  aria-label="推广关系披露"
+>
+  <p class="font-semibold text-ink-700 dark:text-ink-300">关于本页信息与推广关系</p>
+  <p class="mt-1.5 leading-relaxed">
+    本站由 <strong>GSY Cloud（光速云）</strong> 运营，<strong>光速云是本站自有品牌</strong>，页面中会明确标注。
+    其余品牌的注册链接为推广链接，通过链接注册可能为本站带来收益，但<strong>不影响你的购买价格</strong>。
+    价格、流量与卖点信息由各品牌方提供，属参考资料，可能随时调整，请以对应官网实时页面为准；
+    未获品牌方确认的信息一律标注为「暂未核实」，我们不编造运营时间、节点数量与测试结果。收录标准见<a
+      href="/editorial-policy/"
+      class="text-brand-600 underline-offset-2 hover:underline dark:text-brand-400">编辑政策</a
+    >。
+  </p>
+</aside>

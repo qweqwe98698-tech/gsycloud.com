@@ -1,0 +1,64 @@
+---
+import PageLayout from '@layouts/PageLayout.astro';
+import { TUTORIAL_PILLARS, AI_PILLARS } from '@data/pillars';
+import { SECTIONS } from '@utils/site';
+
+const sectionEntries = Object.entries(SECTIONS);
+---
+
+<PageLayout
+  title="专题导航"
+  pageTitle="专题导航｜全站栏目与专题总览｜GSY Cloud"
+  description="GSY Cloud 全站专题总览：内容栏目、客户端教程专题与 AI 平台专题的入口导航。"
+  path="/topics/"
+  intro="按栏目与专题浏览全站内容。"
+>
+  <div slot="wide" class="mt-8 max-w-4xl space-y-10">
+    <section aria-label="内容栏目">
+      <h2 class="text-lg font-bold text-ink-900 dark:text-white">内容栏目</h2>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          sectionEntries.map(([slug, section]) => (
+            <a
+              href={`/${slug}/`}
+              class="rounded-lg border border-ink-100 p-4 transition-colors duration-150 hover:border-brand-300 hover:bg-brand-50/50 dark:border-ink-700/40 dark:hover:border-brand-700 dark:hover:bg-brand-900/20"
+            >
+              <span class="font-semibold text-ink-900 dark:text-white">{section.name}</span>
+              <span class="mt-1 line-clamp-2 block text-sm text-ink-500">{section.description}</span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+    <section aria-label="客户端教程专题">
+      <h2 class="text-lg font-bold text-ink-900 dark:text-white">客户端教程专题</h2>
+      <div class="mt-4 flex flex-wrap gap-2">
+        {
+          TUTORIAL_PILLARS.map((pillar) => (
+            <a
+              href={`/tutorials/${pillar.slug}/`}
+              class="rounded-full border border-ink-100 px-4 py-1.5 text-sm font-medium text-ink-700 transition-colors duration-150 hover:border-brand-300 hover:text-brand-700 dark:border-ink-700/40 dark:text-ink-300 dark:hover:border-brand-700 dark:hover:text-brand-300"
+            >
+              {pillar.title}
+            </a>
+          ))
+        }
+      </div>
+    </section>
+    <section aria-label="AI 平台专题">
+      <h2 class="text-lg font-bold text-ink-900 dark:text-white">AI 平台专题</h2>
+      <div class="mt-4 flex flex-wrap gap-2">
+        {
+          AI_PILLARS.map((pillar) => (
+            <a
+              href={`/ai/${pillar.slug}/`}
+              class="rounded-full border border-ink-100 px-4 py-1.5 text-sm font-medium text-ink-700 transition-colors duration-150 hover:border-brand-300 hover:text-brand-700 dark:border-ink-700/40 dark:text-ink-300 dark:hover:border-brand-700 dark:hover:text-brand-300"
+            >
+              {pillar.title}
+            </a>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+</PageLayout>

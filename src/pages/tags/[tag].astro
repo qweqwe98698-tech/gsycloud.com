@@ -1,0 +1,41 @@
+---
+import ArchiveLayout from '@layouts/ArchiveLayout.astro';
+import { getAllPublished, toArchiveItem } from '@utils/collections';
+import { slugify } from '@utils/url';
+import { SITE } from '@utils/site';
+
+/** 标签页索引门槛：内容数低于该值时 noindex,follow，防止 Tag Explosion */
+const INDEX_THRESHOLD = 3;
+
+export async function getStaticPaths() {
+  const all = await getAllPublished();
+  const tagMap = new Map<string, { name: string; items: typeof all }>();
+  for (const flat of all) {
+    for (const tag of flat.entry.data.tags) {
+      const slug = slugify(tag);
+      if (!slug) continue;
+      const existing = tagMap.get(slug);
+      if (existing) existing.items.push(flat);
+      else tagMap.set(slug, { name: tag, items: [flat] });
+    }
+  }
+  return [...tagMap.entries()].map(([slug, { name, items }]) => ({
+    params: { tag: slug },
+    props: { name, items },
+  }));
+}
+
+const { name, items } = Astro.props;
+const archiveItems = items.map(({ collection, entry }) => toArchiveItem(collection, entry));
+const noindex = archiveItems.length < INDEX_THRESHOLD;
+---
+
+<ArchiveLayout
+  title={`标签：${name}`}
+  pageTitle={`${name} 相关文章｜标签｜${SITE.name}`}
+  description={`GSY Cloud 站内与「${name}」相关的全部文章列表。`}
+  path={`/tags/${Astro.params.tag}/`}
+  items={archiveItems}
+  midCrumbs={[{ name: '标签', path: '/tags/' }]}
+  noindex={noindex}
+/>

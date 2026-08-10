@@ -1,0 +1,134 @@
+---
+/**
+ * HTML 网站地图：面向用户与搜索引擎爬虫的全站可索引内容清单。
+ * 与 /sitemap-index.xml（机器可读）互为补充；本页只列出实际可被索引的页面
+ * （不含 /search/、稀疏标签页等 noindex 页面），按栏目分组、按更新时间排序。
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Breadcrumb from '@components/Breadcrumb.astro';
+import { SECTIONS, SITE } from '@utils/site';
+import { CONTENT_COLLECTIONS, getPublished } from '@utils/collections';
+import { postUrl } from '@utils/url';
+import { BRAND_TOPICS } from '@data/airports/topics';
+import { AIRPORT_BRANDS } from '@data/airports/brands';
+import { breadcrumbSchema } from '@utils/schema';
+import { formatDate, isoDate } from '@utils/content';
+
+const sectionEntries = await Promise.all(
+  CONTENT_COLLECTIONS.map(async (collection) => ({
+    collection,
+    section: SECTIONS[collection],
+    items: await getPublished(collection),
+  })),
+);
+
+const path = '/sitemap/';
+const description =
+  'GSY Cloud 全站 HTML 网站地图：按栏目分组列出全部可索引页面，包含机场推荐专题、品牌评测、客户端教程、故障排查与网络知识文章，供用户与搜索引擎快速发现全站内容。';
+const crumbs = [
+  { name: '首页', path: '/' },
+  { name: '网站地图', path },
+];
+
+const staticPages = [
+  { label: '关于我们', href: '/about/' },
+  { label: '服务介绍', href: '/services/' },
+  { label: '作者团队', href: '/authors/' },
+  { label: '编辑政策', href: '/editorial-policy/' },
+  { label: '资讯与公告', href: '/news/' },
+  { label: '免责声明', href: '/disclaimer/' },
+  { label: '隐私政策', href: '/privacy/' },
+  { label: '联系我们', href: '/contact/' },
+  { label: '专题导航', href: '/topics/' },
+];
+
+const updatedDate = new Date('2026-08-10');
+---
+
+<BaseLayout
+  title={`网站地图｜全站页面索引｜${SITE.name}`}
+  description={description}
+  path={path}
+  schema={[breadcrumbSchema(crumbs)]}
+>
+  <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+    <Breadcrumb crumbs={crumbs} />
+
+    <header class="mt-6 max-w-3xl">
+      <h1 class="text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl dark:text-white">
+        网站地图
+      </h1>
+      <p class="mt-4 text-base leading-relaxed text-ink-700 dark:text-ink-300">
+        本页列出全站全部可索引页面，按栏目分组。机器可读版本见
+        <a href="/sitemap-index.xml" class="text-brand-600 hover:underline dark:text-brand-400">
+          sitemap-index.xml
+        </a>
+        。仅列出正常收录的页面，不包含站内搜索、内容量不足的标签页等已设置 noindex 的页面。
+      </p>
+      <p class="mt-3 text-sm text-ink-500">
+        最近更新：<time datetime={isoDate(updatedDate)}>{formatDate(updatedDate)}</time>
+      </p>
+    </header>
+
+    <section class="mt-10" aria-label="核心页面">
+      <h2 class="text-xl font-bold text-ink-900 dark:text-white">核心页面</h2>
+      <ul class="mt-4 grid gap-x-6 gap-y-1.5 sm:grid-cols-2 lg:grid-cols-3">
+        <li><a href="/" class="text-sm text-brand-600 hover:underline dark:text-brand-400">首页</a></li>
+        <li><a href="/brands/" class="text-sm text-brand-600 hover:underline dark:text-brand-400">机场品牌库（16 家）</a></li>
+        {
+          staticPages.map((page) => (
+            <li>
+              <a href={page.href} class="text-sm text-brand-600 hover:underline dark:text-brand-400">
+                {page.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="mt-10" aria-label="机场选购专题">
+      <h2 class="text-xl font-bold text-ink-900 dark:text-white">机场选购专题（{BRAND_TOPICS.length}）</h2>
+      <p class="mt-1.5 text-sm text-ink-500">按需求划分的商业专题页，覆盖 {AIRPORT_BRANDS.length} 家品牌的横向对比。</p>
+      <ul class="mt-4 grid gap-x-6 gap-y-1.5 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          BRAND_TOPICS.map((topic) => (
+            <li>
+              <a href={`/airport/${topic.slug}/`} class="text-sm text-brand-600 hover:underline dark:text-brand-400">
+                {topic.h1}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    {
+      sectionEntries
+        .filter(({ items }) => items.length > 0)
+        .map(({ collection, section, items }) => (
+          <section class="mt-10" aria-label={section?.name}>
+            <h2 class="text-xl font-bold text-ink-900 dark:text-white">
+              <a href={`/${collection}/`} class="hover:text-brand-600 dark:hover:text-brand-400">
+                {section?.name}
+              </a>
+              <span class="ml-2 text-sm font-normal text-ink-500">（{items.length}）</span>
+            </h2>
+            {section?.description && <p class="mt-1.5 text-sm text-ink-500">{section.description}</p>}
+            <ul class="mt-4 grid gap-x-6 gap-y-1.5 sm:grid-cols-2 lg:grid-cols-3">
+              {items.map((entry) => (
+                <li>
+                  <a
+                    href={postUrl(collection, entry.id)}
+                    class="text-sm text-brand-600 hover:underline dark:text-brand-400"
+                  >
+                    {entry.data.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+    }
+  </div>
+</BaseLayout>

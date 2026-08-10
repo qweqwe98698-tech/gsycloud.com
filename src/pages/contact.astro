@@ -1,0 +1,34 @@
+---
+import PageLayout from '@layouts/PageLayout.astro';
+import { webPageSchema } from '@utils/schema';
+
+const description = '联系 GSY Cloud：内容纠错、商务合作与服务支持的联系方式与响应说明。';
+---
+
+<PageLayout
+  title="联系我们"
+  pageTitle="联系我们｜GSY Cloud"
+  description={description}
+  path="/contact/"
+  intro="内容纠错、合作或服务支持，欢迎通过以下方式联系。"
+  schema={[webPageSchema('ContactPage', { name: '联系我们', description, path: '/contact/' })]}
+>
+  <h2>联系方式</h2>
+  <ul>
+    <li><strong>内容纠错与反馈</strong>：如发现文章错误、过期信息或死链，请注明页面地址与问题描述。</li>
+    <li><strong>服务支持</strong>：GSY Cloud 服务相关问题，请附上你使用的客户端与出现的错误提示。</li>
+    <li><strong>商务合作</strong>：请说明合作类型与基本信息。</li>
+  </ul>
+  <p>
+    联系邮箱：<a href="mailto:support@gsycloud.com">support@gsycloud.com</a>
+  </p>
+
+  <h2>反馈前的自助排查</h2>
+  <p>
+    大多数连接类问题可以通过<a href="/troubleshooting/">故障排查中心</a>自助解决；客户端配置问题请先查看对应的<a
+      href="/tutorials/">客户端教程</a>。
+  </p>
+
+  <h2>响应说明</h2>
+  <p>我们会尽快处理你的邮件；内容纠错类反馈核实后会同步更新文章及其更新时间标注。</p>
+</PageLayout>

@@ -1,0 +1,39 @@
+---
+import PageLayout from '@layouts/PageLayout.astro';
+---
+
+<PageLayout
+  title="隐私政策"
+  pageTitle="隐私政策｜GSY Cloud"
+  description="GSY Cloud 网站的隐私实践说明：本站为静态网站，不设账户体系，仅在浏览器本地存储主题偏好，不收集个人身份信息。"
+  path="/privacy/"
+>
+  <h2>信息收集</h2>
+  <p>
+    gsycloud.com 网站部分为纯静态网站，不设注册与账户体系，不主动收集姓名、邮箱等个人身份信息。
+  </p>
+
+  <h2>本地存储</h2>
+  <p>
+    网站使用浏览器 localStorage 保存你的主题偏好（浅色 / 深色），该数据仅存储在你的设备上，不会上传到服务器。
+  </p>
+
+  <h2>站内搜索</h2>
+  <p>
+    站内搜索基于 Pagefind 静态索引在浏览器本地完成，搜索词不会发送到任何后端服务器。
+  </p>
+
+  <h2>托管与日志</h2>
+  <p>
+    网站托管于 Cloudflare Pages，Cloudflare 可能出于安全与性能目的记录标准访问日志（如 IP、User-Agent）。相关处理方式请参见
+    Cloudflare 的隐私政策。
+  </p>
+
+  <h2>外部链接</h2>
+  <p>
+    本站包含指向第三方网站的链接，第三方网站的隐私实践由其各自政策约束，请自行查阅。
+  </p>
+
+  <h2>政策更新</h2>
+  <p>本政策如有变更，将在本页更新。继续使用本站即视为接受更新后的政策。</p>
+</PageLayout>

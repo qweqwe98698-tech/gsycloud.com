@@ -1,0 +1,347 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import ArticleCard from '@components/ArticleCard.astro';
+import SectionHeading from '@components/SectionHeading.astro';
+import BrandCard from '@components/BrandCard.astro';
+import BrandTable from '@components/BrandTable.astro';
+import GeoAnswer from '@components/GeoAnswer.astro';
+import AffiliateDisclosure from '@components/AffiliateDisclosure.astro';
+import FaqSection from '@components/FaqSection.astro';
+import { SITE } from '@utils/site';
+import { getPublished, getAllPublished, toArchiveItem } from '@utils/collections';
+import { AIRPORT_BRANDS, getBrand, sortHouseFirstThenValue, BRAND_STATS } from '@data/airports/brands';
+import { TUTORIAL_PILLARS } from '@data/pillars';
+import { faqSchema, collectionPageSchema } from '@utils/schema';
+import { formatDate, isoDate } from '@utils/content';
+
+const [troubleshooting, network, protocols, all] = await Promise.all([
+  getPublished('troubleshooting'),
+  getPublished('network'),
+  getPublished('protocols'),
+  getAllPublished(),
+]);
+
+const latest = all.slice(0, 6).map(({ collection, entry }) => toArchiveItem(collection, entry));
+const knowledgeItems = [
+  ...network.slice(0, 3).map((e) => toArchiveItem('network', e)),
+  ...protocols.slice(0, 3).map((e) => toArchiveItem('protocols', e)),
+];
+const rankedBrands = [...AIRPORT_BRANDS].sort(sortHouseFirstThenValue);
+const updatedDate = new Date('2026-08-10');
+
+/** 首页精选：每档一个代表，覆盖不同搜索意图，理由不与专题页重复 */
+const HOME_PICKS = [
+  { slug: 'gsycloud', reason: '六年运营 + 企业级内网专线 + AI 与流媒体双全解锁，长期稳定使用的综合首选。' },
+  { slug: 'flycat', reason: '年付月均 7 元的专线小包，预算优先且月流量在 50G 以内的轻度用户最划算。' },
+  { slug: 'xingdaomeng', reason: '年付 8 元起、套餐档位最多且提供不限时套餐，用量不规律的用户可灵活搭配。' },
+  { slug: 'civetnet', reason: '月付即可拿到 150G，兼顾大流量与「不押长周期」的风险控制需求。' },
+  { slug: 'jilianyun', reason: '18 元专线搭配 AI 全解锁定位，AI 工具用户的针对性档位。' },
+  { slug: 'kexinyun', reason: '150G 专线 + 流媒体全解锁，家庭多设备追剧场景的对口选择。' },
+]
+  .map((p) => ({ brand: getBrand(p.slug), reason: p.reason }))
+  .filter((p): p is { brand: NonNullable<ReturnType<typeof getBrand>>; reason: string } =>
+    Boolean(p.brand),
+  );
+
+/** 按需求分流入口：每个入口对应一个独立搜索意图的专题页 */
+const NEEDS = [
+  { label: '预算优先', desc: '月均 20 元以内的低价档', href: '/airport/budget/' },
+  { label: '晚高峰稳定', desc: 'IEPL / IPLC 专线档位', href: '/airport/iepl/' },
+  { label: 'AI 工具', desc: 'ChatGPT、Claude 可用档位', href: '/airport/chatgpt/' },
+  { label: '看剧观影', desc: 'Netflix 等流媒体解锁档位', href: '/airport/streaming/' },
+  { label: 'Clash 用户', desc: '支持 Clash 订阅的机场', href: '/airport/clash/' },
+  { label: 'iPhone 用户', desc: 'Shadowrocket 可用机场', href: '/airport/shadowrocket/' },
+  { label: '用量不规律', desc: '不限时与按量计费套餐', href: '/airport/unlimited/' },
+  { label: '找优惠', desc: '16 家品牌优惠码汇总', href: '/airport/coupon/' },
+];
+
+/** 首页只回答最核心的决策问题（长尾问题库页面级分配） */
+const HOME_QUESTIONS = [
+  {
+    question: '机场应该怎么选？',
+    answer:
+      '先确定三件事：每月大致流量、主要用途（浏览 / 观影 / AI / 游戏）、可接受的付费周期。流量决定套餐档位，用途决定是否需要为解锁能力付费，付费周期决定你的风险敞口。三者确定后，候选通常只剩两三家。',
+  },
+  {
+    question: '机场稳定性应该看哪些指标？',
+    answer:
+      '看线路类型与晚高峰表现，而不是节点数量。IEPL / IPLC 专线不经过公网国际出口，20:00–23:00 的延迟与丢包基本不劣化；中转线路成本更低但会受出口拥塞影响。节点多不等于稳，单节点超售严重同样会卡。',
+  },
+  {
+    question: '便宜机场和专线机场有什么区别？',
+    answer:
+      '差别主要在线路成本与超售率。便宜档多用中转线路或小流量包摊薄成本，空闲时段速度不差，高峰期波动明显；专线档单价更高、常有流量倍率，换来的是稳定的延迟与低丢包。轻度浏览选便宜档，实时场景选专线档。',
+  },
+  {
+    question: '新手第一次购买机场应该注意什么？',
+    answer:
+      '三条原则：第一次一定选月付或最短周期，不要被年付折扣吸引；按真实用量选档位，100G 左右足够多数人；购买后先在晚高峰实测你常用的平台。确认体验合格再考虑长周期，这样试错成本最低。',
+  },
+  {
+    question: 'Clash、Shadowrocket 和 v2rayN 用户怎么选机场？',
+    answer:
+      '几乎所有机场都提供这三类客户端通用的订阅格式，因此客户端不构成筛选条件。真正要比较的仍是线路、流量与解锁能力。iOS 用户需额外注意 Shadowrocket 需在非中国区 App Store 购买，或选择提供自研 iOS 客户端的品牌。',
+  },
+  {
+    question: 'ChatGPT 和 Netflix 用户怎么选机场？',
+    answer:
+      '两者要求不同。AI 工具看重出口 IP 的风控信誉与长连接稳定性，流量消耗很小，100G 档位足够；流媒体看重 IP 的地区归属与解锁库判定，且流量消耗大，1080p 每小时约 3G，建议 150G 以上。两项都要则选双全解锁档位。',
+  },
+  {
+    question: '月付、年付和按量计费哪个好？',
+    answer:
+      '按使用模式选：每月稳定消耗选月付，风险可控；确认长期使用且已验证过该品牌可考虑年付，单价更低但资金占用与跑路风险更高；用量不规律或作为备用线路，选不限时按量套餐最合适。',
+  },
+  {
+    question: '如何判断一家机场是否靠谱？',
+    answer:
+      '看四点：定价是否与线路成本相符（专线卖白菜价通常有问题）、信息披露是否具体（含糊其辞的多有隐情）、客服响应是否及时、以及是否用超长周期大额折扣催促下单。这四点比用户评价更可靠。',
+  },
+  {
+    question: '本站的机场对比是如何排序的？',
+    answer:
+      '默认按每 GB 单价这一可计算的客观指标升序排列，并把本站自有品牌单独标识，不做主观的「综合评分」排名。因为不同用户对价格、稳定性与解锁能力的权重完全不同，一个统一的分数会误导判断。',
+  },
+  {
+    question: '网站多久更新一次机场信息？',
+    answer:
+      '价格、优惠码与套餐结构属于高频变化信息，品牌方调整后我们同步更新品牌库，全站页面数据同源、一次更新处处生效。页面标注最近更新时间，且只在内容实际变化时更新，不通过改日期制造「最新」假象。',
+  },
+];
+
+const HOME_FAQ = [
+  {
+    question: '这份机场评测收录了哪些品牌？收录标准是什么？',
+    answer:
+      '目前收录 16 家机场品牌。收录标准是品牌方能够提供可核对的套餐、线路与解锁说明并具备可用注册入口；未获确认的字段一律标注「暂未核实」。对比不以付费高低决定排序，排序依据是每 GB 单价这一客观指标。',
+  },
+  {
+    question: '光速云是本站自己的品牌吗？会不会影响评测的客观性？',
+    answer:
+      '是的，光速云（GSY Cloud）是本站自有品牌，我们在所有出现位置都做了明确标识，而不是包装成第三方评测结论。其余品牌为推广合作。判断依据我们已经全部公开：参数字段统一、排序规则可计算、未核实项目留白，你可以据此独立判断。',
+  },
+  {
+    question: '通过本站链接购买会更贵吗？',
+    answer:
+      '不会。本站链接为推广链接，通过它注册可能为本站带来收益，但不影响你的购买价格；部分品牌的链接本身还包含新人折扣。是否使用本站链接，你支付的金额是一样的。',
+  },
+  {
+    question: '为什么没有速度排名或综合评分？',
+    answer:
+      '因为测速结果高度依赖测试时间、地区、运营商与本地网络，任何单次测速都无法预测你的实际体验。把它折算成跨品牌分数会制造虚假的精确感。我们在各品牌评测页提供测速面板导出图作为参考，但不据此排名。',
+  },
+  {
+    question: '我已经买过机场了，还需要看这个网站吗？',
+    answer:
+      '可以直接使用站内的客户端教程与故障排查中心：节点超时、订阅更新失败、延迟高、Netflix 提示代理错误等常见问题都有系统的排查步骤，与你使用哪一家机场无关。',
+  },
+];
+
+const schema = [
+  collectionPageSchema({
+    name: 'GSY Cloud 机场评测、线路选择与网络工具指南',
+    description: SITE.description,
+    path: '/',
+    items: rankedBrands.map((b) => ({ name: b.name, path: `/reviews/${b.slug}/` })),
+  }),
+  faqSchema(HOME_FAQ),
+];
+---
+
+<BaseLayout title={SITE.title} description={SITE.description} path="/" schema={schema}>
+  <!-- Hero：P0 核心词 + 直接答案 -->
+  <section
+    class="border-b border-ink-100 bg-gradient-to-b from-brand-50/60 to-white dark:border-ink-700/40 dark:from-ink-900 dark:to-ink-900"
+  >
+    <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-18">
+      <div class="max-w-3xl">
+        <p class="inline-flex items-center gap-1.5 rounded-full border border-brand-200 bg-brand-50/80 px-3 py-1 text-xs font-semibold text-brand-700 dark:border-brand-800 dark:bg-brand-900/30 dark:text-brand-300">
+          <span class="h-1.5 w-1.5 rounded-full bg-brand-600 dark:bg-brand-400"></span>
+          品牌内容站 · 机场评测与网络工具知识
+        </p>
+        <h1 class="mt-4 text-3xl font-bold leading-[1.2] tracking-tight text-ink-900 sm:text-4xl lg:text-[2.75rem] dark:text-white">
+          <span class="brand-accent-text">GSY Cloud</span>｜机场评测、线路选择<br />与网络工具指南
+        </h1>
+        <p class="mt-5 text-lg leading-relaxed text-ink-700 dark:text-ink-300">
+          GSY Cloud 提供结构化的机场评测与线路选择参考。本站收录 {BRAND_STATS.total} 家机场品牌，逐一评测线路类型（专线 /
+          中转）、协议与套餐，并按 AI、流媒体解锁能力分类整理，配套客户端教程、故障排查与网络工具指南，帮你理解机场服务背后的技术差异，选出真正适合自己的线路。
+        </p>
+        <div class="mt-8 flex flex-wrap items-center gap-3">
+          <a
+            href="/airport/ranking/"
+            class="group inline-flex items-center gap-1.5 rounded-md bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-brand-600/20 transition-all duration-150 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-md hover:shadow-brand-600/30"
+          >
+            查看机场对比
+            <span class="transition-transform duration-150 group-hover:translate-x-0.5" aria-hidden="true">→</span>
+          </a>
+          <a
+            href="/brands/"
+            class="rounded-md border border-ink-300 px-5 py-2.5 text-sm font-semibold text-ink-700 transition-colors duration-150 hover:bg-ink-50 dark:border-ink-700 dark:text-ink-300 dark:hover:bg-ink-700/30"
+          >
+            浏览品牌库
+          </a>
+          <a
+            href="/airport/beginners/"
+            class="rounded-md border border-ink-300 px-5 py-2.5 text-sm font-semibold text-ink-700 transition-colors duration-150 hover:bg-ink-50 dark:border-ink-700 dark:text-ink-300 dark:hover:bg-ink-700/30"
+          >
+            新手入门
+          </a>
+          <a
+            href="/search/"
+            class="flex items-center gap-2 rounded-md border border-ink-100 bg-white px-4 py-2.5 text-sm text-ink-500 transition-colors duration-150 hover:border-brand-300 dark:border-ink-700/40 dark:bg-ink-900"
+            aria-label="打开站内搜索"
+          >
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="m20 20-3.5-3.5" stroke-linecap="round"></path>
+            </svg>
+            搜索机场、教程、故障关键词…
+          </a>
+        </div>
+        <p class="mt-5 text-sm text-ink-500">
+          最近更新：<time datetime={isoDate(updatedDate)}>{formatDate(updatedDate)}</time> · 收录
+          <span class="tabular-nums-anim font-semibold text-ink-700 dark:text-ink-300" data-count-to={BRAND_STATS.total}>
+            {BRAND_STATS.total}
+          </span>
+          家品牌 · 最低月均 ¥<span
+            class="tabular-nums-anim font-semibold text-ink-700 dark:text-ink-300"
+            data-count-to={BRAND_STATS.minPrice}>{BRAND_STATS.minPrice}</span
+          > 起
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-6xl space-y-16 px-4 py-14 sm:px-6">
+    <!-- 按需求分流：把不同搜索意图导向对应专题页 -->
+    <section aria-label="按需求选择机场">
+      <SectionHeading title="按你的需求选机场" description="不同需求对应不同档位，选错方向比选错品牌代价更大" />
+      <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          NEEDS.map((need) => (
+            <a
+              href={need.href}
+              class="rounded-lg border border-ink-100 bg-white p-5 transition-colors duration-150 hover:border-brand-300 hover:bg-brand-50/50 dark:border-ink-700/40 dark:bg-ink-900 dark:hover:border-brand-700 dark:hover:bg-brand-900/20"
+            >
+              <span class="font-semibold text-ink-900 dark:text-white">{need.label}</span>
+              <span class="mt-1 block text-sm text-ink-500">{need.desc}</span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- 编辑精选 -->
+    <section aria-label="编辑精选机场">
+      <SectionHeading
+        title="编辑精选：六个方向各一个代表"
+        description="覆盖预算、稳定、AI、观影等主要需求，顺序不代表优劣"
+        moreHref="/airport/ranking/"
+        moreLabel="查看完整对比"
+      />
+      <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {HOME_PICKS.map((pick) => <BrandCard brand={pick.brand} reason={pick.reason} placement="home-picks" />)}
+      </div>
+      <div class="mt-6 max-w-3xl">
+        <AffiliateDisclosure />
+      </div>
+    </section>
+
+    <!-- 全部品牌对比 -->
+    <section aria-label="全部机场品牌对比">
+      <SectionHeading
+        title={`${BRAND_STATS.total} 家机场横向对比`}
+        description="默认按每 GB 单价排序，可点击表头切换"
+        moreHref="/brands/"
+        moreLabel="完整品牌库"
+      />
+      <BrandTable
+        brands={rankedBrands}
+        caption="机场品牌横向对比：价格、流量、每 GB 单价、线路、AI 与流媒体解锁"
+        placement="home-table"
+      />
+    </section>
+
+    <!-- GEO 决策问答 -->
+    <section aria-label="选购常见问题" class="max-w-3xl">
+      <SectionHeading title="选机场前最该想清楚的十个问题" description="结论前置，每个问题都给出可执行的判断标准" />
+      <div class="mt-6 space-y-6">
+        {HOME_QUESTIONS.map((item) => <GeoAnswer question={item.question} answer={item.answer} level={3} />)}
+      </div>
+    </section>
+
+    <!-- 客户端教程 -->
+    <section aria-label="客户端教程">
+      <SectionHeading title="买完之后：客户端配置" description="从导入订阅到选节点，按客户端整理的完整路径" moreHref="/tutorials/" />
+      <div class="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {
+          TUTORIAL_PILLARS.filter((p) => ['clash', 'mihomo', 'shadowrocket', 'v2rayn'].includes(p.slug)).map(
+            (pillar) => (
+              <a
+                href={`/tutorials/${pillar.slug}/`}
+                class="rounded-lg border border-ink-100 bg-white p-5 transition-colors duration-150 hover:border-brand-300 hover:bg-brand-50/50 dark:border-ink-700/40 dark:bg-ink-900 dark:hover:border-brand-700 dark:hover:bg-brand-900/20"
+              >
+                <span class="font-semibold text-ink-900 dark:text-white">{pillar.name}</span>
+                <span class="mt-1 line-clamp-2 block text-sm text-ink-500">{pillar.description}</span>
+              </a>
+            ),
+          )
+        }
+      </div>
+    </section>
+
+    <!-- 故障排查 -->
+    {
+      troubleshooting.length > 0 && (
+        <section aria-label="故障排查">
+          <SectionHeading
+            title="用不了？按症状找解决步骤"
+            description="节点超时、订阅失败、延迟高、速度慢的系统排查"
+            moreHref="/troubleshooting/"
+          />
+          <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {troubleshooting.slice(0, 4).map((entry) => (
+              <ArticleCard {...toArchiveItem('troubleshooting', entry)} />
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <!-- 知识库 -->
+    {
+      knowledgeItems.length > 0 && (
+        <section aria-label="线路与协议知识">
+          <SectionHeading
+            title="看懂机场宣传里的技术名词"
+            description="IPLC、原生 IP、VLESS 到底意味着什么"
+            moreHref="/network/"
+          />
+          <div class="mt-6 grid gap-5 sm:grid-cols-2">
+            {knowledgeItems.map((item) => (
+              <ArticleCard {...item} />
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <!-- 最新更新 -->
+    {
+      latest.length > 0 && (
+        <section aria-label="最新更新">
+          <SectionHeading title="最新更新" description="全站最近更新的原创内容" moreHref="/topics/" moreLabel="专题导航" />
+          <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {latest.map((item) => (
+              <ArticleCard {...item} />
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <div class="max-w-3xl">
+      <FaqSection faq={HOME_FAQ} title="关于本站与机场对比的常见问题" />
+    </div>
+  </div>
+</BaseLayout>

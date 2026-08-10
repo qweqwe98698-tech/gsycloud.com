@@ -1,0 +1,62 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+const { headings } = Astro.props;
+const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+{
+  tocHeadings.length > 2 && (
+    <nav class="toc" aria-label="目录">
+      <h2 class="text-sm font-semibold text-ink-900 dark:text-white">目录</h2>
+      <ul class="mt-3 space-y-2 border-l border-ink-100 text-sm dark:border-ink-700/40">
+        {tocHeadings.map((heading) => (
+          <li>
+            <a
+              href={`#${heading.slug}`}
+              class:list={[
+                'toc-link -ml-px block rounded-r border-l-2 border-transparent py-1 text-ink-500 transition-colors duration-150 hover:border-brand-300 hover:bg-brand-50/60 hover:text-brand-600 dark:hover:bg-brand-900/20 dark:hover:text-brand-400',
+                heading.depth === 2 ? 'pl-3' : 'pl-6',
+              ]}
+              data-toc-slug={heading.slug}
+            >
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+
+<script>
+  // TOC 当前位置高亮（IntersectionObserver，纯浏览器 API）
+  const tocLinks = document.querySelectorAll<HTMLAnchorElement>('.toc-link');
+  if (tocLinks.length > 0) {
+    const map = new Map<string, HTMLAnchorElement>();
+    tocLinks.forEach((link) => {
+      const slug = link.dataset.tocSlug;
+      if (slug) map.set(slug, link);
+    });
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const link = map.get(entry.target.id);
+          if (!link) return;
+          if (entry.isIntersecting) {
+            tocLinks.forEach((l) => l.classList.remove('is-active'));
+            link.classList.add('is-active');
+          }
+        });
+      },
+      { rootMargin: '-80px 0px -70% 0px' },
+    );
+    map.forEach((_link, slug) => {
+      const el = document.getElementById(slug);
+      if (el) observer.observe(el);
+    });
+  }
+</script>

@@ -1,0 +1,41 @@
+---
+import ArchiveLayout from '@layouts/ArchiveLayout.astro';
+import ArticleCard from '@components/ArticleCard.astro';
+import { getPublished, toArchiveItem } from '@utils/collections';
+import { SITE } from '@utils/site';
+
+const entries = await getPublished('news');
+const official = entries.filter((e) => e.data.contentType === 'official');
+const industry = entries.filter((e) => e.data.contentType !== 'official');
+const items = industry.map((entry) => toArchiveItem('news', entry));
+---
+
+<ArchiveLayout
+  title="资讯"
+  pageTitle={`资讯与公告｜机场行业动态与官方公告｜${SITE.name}`}
+  description="GSY Cloud 官方公告与机场行业动态、客户端版本更新、网络技术与 AI / 流媒体动态。官方公告与行业资讯分区展示。"
+  path="/news/"
+  intro="本栏目分为两部分：GSY Cloud 官方公告（服务与网站相关通知）与行业资讯（机场行业、客户端更新、网络技术与 AI / 流媒体动态）。"
+  items={items}
+>
+  <div slot="before-list" class="mt-10">
+    <section
+      aria-label="GSY Cloud 官方公告"
+      class="rounded-lg border border-brand-200 bg-brand-50/50 p-5 dark:border-brand-800 dark:bg-brand-900/20"
+    >
+      <h2 class="text-lg font-bold text-ink-900 dark:text-white">GSY Cloud 官方公告</h2>
+      {
+        official.length > 0 ? (
+          <div class="mt-4 grid gap-4 sm:grid-cols-2">
+            {official.map((entry) => (
+              <ArticleCard {...toArchiveItem('news', entry)} />
+            ))}
+          </div>
+        ) : (
+          <p class="mt-3 text-sm text-ink-500">暂无公告。</p>
+        )
+      }
+    </section>
+    <h2 class="mt-8 text-lg font-bold text-ink-900 dark:text-white">行业资讯</h2>
+  </div>
+</ArchiveLayout>

@@ -1,0 +1,127 @@
+---
+import { SITE } from '@utils/site';
+import Logo from './Logo.astro';
+
+const year = new Date().getFullYear();
+
+const footerGroups = [
+  {
+    title: '选机场',
+    links: [
+      { label: '2026 机场排行榜', href: '/airport/ranking/' },
+      { label: '机场品牌库', href: '/brands/' },
+      { label: '便宜机场推荐', href: '/airport/budget/' },
+      { label: '专线机场推荐', href: '/airport/iepl/' },
+      { label: '机场优惠码', href: '/airport/coupon/' },
+    ],
+  },
+  {
+    title: '按场景',
+    links: [
+      { label: 'ChatGPT 机场推荐', href: '/airport/chatgpt/' },
+      { label: '流媒体解锁机场', href: '/airport/streaming/' },
+      { label: 'Clash 机场推荐', href: '/airport/clash/' },
+      { label: 'Shadowrocket 机场', href: '/airport/shadowrocket/' },
+      { label: '不限时机场推荐', href: '/airport/unlimited/' },
+    ],
+  },
+  {
+    title: '教程与排查',
+    links: [
+      { label: '客户端教程', href: '/tutorials/' },
+      { label: '故障排查', href: '/troubleshooting/' },
+      { label: '节点知识', href: '/nodes/' },
+      { label: '选购指南', href: '/airport/' },
+      { label: '专题导航', href: '/topics/' },
+    ],
+  },
+  {
+    title: '知识库',
+    links: [
+      { label: '协议知识', href: '/protocols/' },
+      { label: '线路与网络', href: '/network/' },
+      { label: 'AI 网络环境', href: '/ai/' },
+      { label: '流媒体', href: '/streaming/' },
+      { label: '风险预警', href: '/risk/' },
+    ],
+  },
+  {
+    title: '关于',
+    links: [
+      { label: '关于我们', href: '/about/' },
+      { label: '服务介绍', href: '/services/' },
+      { label: '作者团队', href: '/authors/' },
+      { label: '编辑政策', href: '/editorial-policy/' },
+      { label: '资讯公告', href: '/news/' },
+    ],
+  },
+  {
+    title: '支持',
+    links: [
+      { label: '联系我们', href: '/contact/' },
+      { label: '免责声明', href: '/disclaimer/' },
+      { label: '隐私政策', href: '/privacy/' },
+      { label: '站内搜索', href: '/search/' },
+      { label: '网站地图', href: '/sitemap/' },
+      { label: 'RSS 订阅', href: '/rss.xml' },
+    ],
+  },
+];
+---
+
+<footer class="relative border-t border-ink-100 bg-ink-50 dark:border-ink-700/40 dark:bg-ink-900">
+  <div
+    class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-300/60 to-transparent dark:via-brand-700/50"
+    aria-hidden="true"
+  >
+  </div>
+  <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,260px)_minmax(0,1fr)]">
+      <div>
+        <a href="/" class="group flex items-center gap-2" aria-label={`${SITE.name} 首页`}>
+          <Logo class="h-8 w-8 transition-transform duration-300 group-hover:scale-105" />
+          <span class="text-lg font-bold tracking-tight text-ink-900 dark:text-white">
+            GSY <span class="text-brand-600">光速云</span>
+          </span>
+        </a>
+        <p class="mt-3 max-w-xs text-sm leading-relaxed text-ink-500">
+          {SITE.slogan}
+        </p>
+        <p class="mt-3 max-w-xs text-sm leading-relaxed text-ink-500">
+          从机场选择、客户端配置到协议与线路知识，为中文用户提供系统化的代理网络使用指南。
+        </p>
+      </div>
+      <div class="reveal-stagger grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+        {
+          footerGroups.map((group) => (
+            <nav class="reveal" aria-label={`页脚：${group.title}`}>
+              <h2 class="text-sm font-semibold text-ink-900 dark:text-white">{group.title}</h2>
+              <ul class="mt-3 space-y-2">
+                {group.links.map((link) => (
+                  <li>
+                    <a
+                      href={link.href}
+                      class="group/link inline-flex items-center text-sm text-ink-500 transition-colors duration-150 hover:text-brand-600 dark:hover:text-brand-400"
+                    >
+                      <span class="transition-transform duration-150 group-hover/link:translate-x-0.5">
+                        {link.label}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ))
+        }
+      </div>
+    </div>
+    <div
+      class="mt-10 flex flex-col items-start justify-between gap-3 border-t border-ink-100 pt-6 text-sm text-ink-500 sm:flex-row dark:border-ink-700/40"
+    >
+      <p>© {year} {SITE.name}（{SITE.nameZh}）. 保留所有权利。</p>
+      <p>
+        本站内容仅供网络技术学习与参考，请遵守所在地区法律法规。
+      </p>
+    </div>
+  </div>
+</footer>

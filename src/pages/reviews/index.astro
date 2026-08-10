@@ -1,0 +1,101 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Breadcrumb from '@components/Breadcrumb.astro';
+import BrandCard from '@components/BrandCard.astro';
+import AffiliateDisclosure from '@components/AffiliateDisclosure.astro';
+import { AIRPORT_BRANDS, sortHouseFirstThenValue, BRAND_STATS } from '@data/airports/brands';
+import { getPublished } from '@utils/collections';
+import { breadcrumbSchema, collectionPageSchema } from '@utils/schema';
+
+const published = await getPublished('reviews');
+const publishedSlugs = new Set(published.map((e) => e.id));
+const brands = [...AIRPORT_BRANDS].sort(sortHouseFirstThenValue);
+
+const path = '/reviews/';
+const crumbs = [
+  { name: '首页', path: '/' },
+  { name: '机场评测', path },
+];
+
+const description =
+  '机场评测栏目按统一框架整理 16 家机场品牌资料：套餐结构、节点地区、线路类型、协议与客户端支持、适合人群与注意事项，并标注信息状态与最近检查时间。';
+
+const schema = [
+  breadcrumbSchema(crumbs),
+  collectionPageSchema({
+    name: '机场评测',
+    description,
+    path,
+    items: brands.map((b) => ({ name: b.name, path: `/reviews/${b.slug}/` })),
+  }),
+];
+---
+
+<BaseLayout
+  title="机场评测｜16 家机场品牌评测与资料对比｜GSY Cloud"
+  description={description}
+  path={path}
+  schema={schema}
+>
+  <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+    <Breadcrumb crumbs={crumbs} />
+
+    <header class="mt-6 max-w-3xl">
+      <h1 class="text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl dark:text-white">
+        机场评测
+      </h1>
+      <p class="mt-4 text-base leading-relaxed text-ink-700 dark:text-ink-300">
+        本栏目收录 {BRAND_STATS.total} 家机场品牌的独立评测。每篇评测使用统一的资料框架（套餐、线路、协议、解锁能力、客户端、适合人群、注意事项），
+        但分析角度按各品牌的定位单独设计，而不是套用同一套模板替换品牌名。
+      </p>
+    </header>
+
+    <div class="mt-6 max-w-3xl">
+      <AffiliateDisclosure />
+    </div>
+
+    <section class="mt-10" aria-label="全部品牌评测">
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <h2 class="text-xl font-bold text-ink-900 dark:text-white">全部品牌</h2>
+        <a href="/brands/" class="text-sm font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400">
+          查看完整品牌库（含测速图与筛选）→
+        </a>
+      </div>
+      <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          brands.map((brand) => (
+            <BrandCard
+              brand={brand}
+              reason={
+                publishedSlugs.has(brand.slug) ? undefined : '评测正在整理中，可先查看品牌库中的结构化资料。'
+              }
+              placement="reviews-index"
+            />
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="mt-12 max-w-3xl" aria-label="评测框架说明">
+      <h2 class="text-2xl font-bold text-ink-900 dark:text-white">评测框架与数据说明</h2>
+      <div class="prose prose-slate mt-4 max-w-none dark:prose-invert prose-a:text-brand-600 dark:prose-a:text-brand-400">
+        <p>每篇评测都包含以下部分，便于横向比较：</p>
+        <ul>
+          <li><strong>基本资料卡</strong>：套餐价格、流量、每 GB 单价、线路类型、协议、开业时间、解锁能力、客户端支持、优惠码，全部由品牌库统一提供；</li>
+          <li><strong>分析正文</strong>：按该品牌的定位展开，例如低价档解析成本结构、AI 定位档解析长连接要求、流媒体档解析 IP 属性；</li>
+          <li><strong>测速图</strong>：测速面板导出结果，原始数据未修改、测试时间已隐去，仅作参考；</li>
+          <li><strong>优势与注意事项</strong>：两个方向都写，不做单向宣传；</li>
+          <li><strong>适合人群与常见问题</strong>：明确适用边界，帮助你判断是否匹配自己的需求。</li>
+        </ul>
+        <p>
+          数据纪律：品牌方未提供的信息（如开业时间、AI 或流媒体解锁情况）一律标注「暂未核实」，不做推测填充；
+          我们不编造节点数量、运营时长与测试结果。完整规则见<a href="/editorial-policy/">编辑政策</a>。
+        </p>
+        <p>
+          还没确定方向？可以先看 <a href="/airport/ranking/">2026 机场排行榜</a> 按需求分档，
+          或从 <a href="/airport/beginners/">新手如何选择机场</a> 开始建立判断标准。
+        </p>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

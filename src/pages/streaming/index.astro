@@ -1,0 +1,21 @@
+---
+import SectionArchive from '@components/SectionArchive.astro';
+---
+
+<SectionArchive
+  collection="streaming"
+  pageTitle="流媒体网络知识｜Netflix、Disney+、TikTok 访问指南｜GSY Cloud"
+  intro="Netflix 为什么提示代理错误？TikTok 为什么看不了？流媒体平台的地区判定主要依赖 IP 属性与 DNS。本栏目按「平台 → 地区 → IP 要求 → 节点选择 → 常见问题」的结构整理流媒体访问知识。"
+>
+  <div slot="after-list" class="prose prose-slate mt-12 max-w-3xl dark:prose-invert">
+    <h2>流媒体访问的关键因素</h2>
+    <ul>
+      <li><strong>IP 属性</strong>：平台会识别数据中心 IP，原生 IP / 家宽 IP 解锁成功率更高，见<a href="/network/native-ip/">原生 IP 是什么</a>。</li>
+      <li><strong>节点地区</strong>：内容库随地区变化，需要选择目标地区的解锁节点。</li>
+      <li><strong>DNS 一致性</strong>：DNS 解析地区与 IP 地区不一致时可能触发代理检测。</li>
+    </ul>
+    <p>
+      遇到具体的播放失败问题，可结合<a href="/troubleshooting/">故障排查中心</a>逐项检查。
+    </p>
+  </div>
+</SectionArchive>

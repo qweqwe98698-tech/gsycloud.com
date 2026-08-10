@@ -1,0 +1,66 @@
+---
+import PageLayout from '@layouts/PageLayout.astro';
+---
+
+<PageLayout
+  title="站内搜索"
+  pageTitle="站内搜索｜GSY Cloud"
+  description="搜索 GSY Cloud 站内的机场推荐、客户端教程、协议知识与故障排查内容。"
+  path="/search/"
+  intro="搜索基于 Pagefind 静态索引在浏览器本地完成，搜索词不会上传到服务器。"
+  noindex={true}
+>
+  <div slot="wide" class="mt-8 max-w-3xl">
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <div id="search" class="pagefind-container"></div>
+    <noscript>
+      <p
+        class="mt-4 rounded-lg border border-ink-100 bg-ink-50 px-4 py-3 text-sm text-ink-500 dark:border-ink-700/40 dark:bg-ink-900"
+      >
+        站内搜索需要启用 JavaScript。你也可以通过<a
+          href="/topics/"
+          class="text-brand-600 hover:underline">专题导航</a
+        >浏览全部内容。
+      </p>
+    </noscript>
+    <script is:inline src="/pagefind/pagefind-ui.js"></script>
+    <script is:inline>
+      window.addEventListener('DOMContentLoaded', () => {
+        if (typeof PagefindUI === 'undefined') return;
+        new PagefindUI({
+          element: '#search',
+          showSubResults: true,
+          translations: {
+            placeholder: '搜索机场、教程、协议、故障关键词…',
+            zero_results: '没有找到与「[SEARCH_TERM]」相关的内容',
+          },
+        });
+        // 支持 /search/?q=关键词 深链接，使 WebSite 的 SearchAction 结构化数据
+        // 对应真实可用的功能，而不是仅作为结构化数据摆设。
+        const params = new URLSearchParams(window.location.search);
+        const q = params.get('q');
+        if (q) {
+          const input = document.querySelector('#search input[type="text"]');
+          if (input) {
+            input.value = q;
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+          }
+        }
+      });
+    </script>
+  </div>
+</PageLayout>
+
+<style is:global>
+  .pagefind-container {
+    --pagefind-ui-primary: var(--color-brand-600);
+    --pagefind-ui-text: var(--color-ink-700);
+    --pagefind-ui-background: transparent;
+    --pagefind-ui-border: var(--color-ink-100);
+    --pagefind-ui-border-radius: 8px;
+  }
+  .dark .pagefind-container {
+    --pagefind-ui-text: var(--color-ink-300);
+    --pagefind-ui-border: rgb(51 65 85 / 0.4);
+  }
+</style>

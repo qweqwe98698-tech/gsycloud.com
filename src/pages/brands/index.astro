@@ -1,0 +1,357 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Breadcrumb from '@components/Breadcrumb.astro';
+import BrandTable from '@components/BrandTable.astro';
+import BrandCta from '@components/BrandCta.astro';
+import AffiliateDisclosure from '@components/AffiliateDisclosure.astro';
+import FaqSection from '@components/FaqSection.astro';
+import { Image } from 'astro:assets';
+import {
+  AIRPORT_BRANDS,
+  BRAND_TAG_LABEL,
+  UNLOCK_LABEL,
+  BRAND_STATS,
+  sortHouseFirstThenValue,
+} from '@data/airports/brands';
+import type { BrandTag } from '@data/airports/brands';
+import { speedTestImage } from '@utils/brand-images';
+import { breadcrumbSchema, collectionPageSchema, faqSchema } from '@utils/schema';
+import { formatDate, isoDate } from '@utils/content';
+
+const brands = [...AIRPORT_BRANDS].sort(sortHouseFirstThenValue);
+const path = '/brands/';
+const updatedDate = new Date('2026-08-10');
+
+const crumbs = [
+  { name: '首页', path: '/' },
+  { name: '机场品牌库', path },
+];
+
+/** 筛选维度：仅保留有实际内容的标签，避免出现空筛选 */
+const FILTERS: { key: BrandTag | 'all'; label: string }[] = [
+  { key: 'all', label: `全部 ${BRAND_STATS.total}` },
+  { key: 'budget', label: BRAND_TAG_LABEL.budget },
+  { key: 'value', label: BRAND_TAG_LABEL.value },
+  { key: 'premium', label: BRAND_TAG_LABEL.premium },
+  { key: 'iepl', label: BRAND_TAG_LABEL.iepl },
+  { key: 'ai', label: BRAND_TAG_LABEL.ai },
+  { key: 'streaming', label: BRAND_TAG_LABEL.streaming },
+  { key: 'veteran', label: BRAND_TAG_LABEL.veteran },
+  { key: 'unlimited', label: BRAND_TAG_LABEL.unlimited },
+  { key: 'large-traffic', label: BRAND_TAG_LABEL['large-traffic'] },
+];
+
+const faq = [
+  {
+    question: '这个品牌库收录标准是什么？',
+    answer:
+      '收录标准是：品牌方能够提供可核对的套餐、线路与解锁说明，并具备可用的注册入口。品牌库不以「付费即收录」为标准，也不承诺收录全部市场品牌；未获品牌方确认的字段一律标注「暂未核实」，不做推测填充。',
+  },
+  {
+    question: '品牌库的数据多久更新一次？',
+    answer:
+      '价格、流量、优惠码属于高频变化信息，我们在品牌方调整后同步更新，并在页面标注最近更新时间。由于各家可能随时调整活动，下单前仍请以对应官网结算页面的实时信息为准。',
+  },
+  {
+    question: '为什么有些品牌的开业时间显示「暂未核实」？',
+    answer:
+      '因为品牌方提供的资料中没有开业时间信息，而我们无法从公开渠道可靠地确认。运营时长是评估风险的参考维度之一，我们宁可留白也不推测——对这类品牌，建议通过短周期试用来降低风险。',
+  },
+  {
+    question: '测速图是怎么来的？能代表我的实际体验吗？',
+    answer:
+      '测速图为测速面板的导出结果，原始测速数据未做修改，测试时间已隐去。它反映的是特定时间、特定测试环境下的结果，受线路波动、时段与本地网络影响很大，不能代表你在自己网络环境下的体验，仅作为节点规模与地区覆盖的参考。',
+  },
+  {
+    question: '光速云是本站自己的品牌，榜单会不会不客观？',
+    answer:
+      '光速云确实是本站自有品牌，我们在所有出现的位置都做了明确标识，而不是把它包装成第三方评测结论。品牌库的排序依据是每 GB 单价这一可计算的客观指标，各品牌的参数字段也来自统一模板，你可以据此自行比较判断。',
+  },
+];
+
+const schema = [
+  breadcrumbSchema(crumbs),
+  collectionPageSchema({
+    name: '机场品牌库',
+    description: '收录 16 家机场品牌的套餐、线路、协议、解锁能力与优惠信息的结构化品牌库',
+    path,
+    items: brands.map((b) => ({ name: b.name, path: `/reviews/${b.slug}/` })),
+  }),
+  faqSchema(faq),
+];
+---
+
+<BaseLayout
+  title="机场品牌库｜16 家机场套餐、线路与优惠码总览｜GSY Cloud"
+  description="机场品牌库收录 16 家机场品牌的完整资料：最低套餐价格、流量规格、线路类型、协议、AI 与流媒体解锁能力、客户端支持、优惠码与测速图，支持按需求标签筛选对比。"
+  path={path}
+  schema={schema}
+>
+  <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+    <Breadcrumb crumbs={crumbs} />
+
+    <header class="mt-6 max-w-3xl">
+      <h1 class="text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl dark:text-white">
+        机场品牌库
+      </h1>
+      <p class="mt-4 text-base leading-relaxed text-ink-700 dark:text-ink-300">
+        本页收录 {BRAND_STATS.total} 家机场品牌的结构化资料，字段统一、可横向比较：最低套餐价格、流量规格、线路类型、协议、AI
+        与流媒体解锁能力、客户端支持、优惠码与测速图。所有品牌使用同一套模板整理，未确认的信息标注「暂未核实」。
+      </p>
+      <p class="mt-3 text-sm text-ink-500">
+        最近更新：<time datetime={isoDate(updatedDate)}>{formatDate(updatedDate)}</time>
+      </p>
+    </header>
+
+    <dl class="reveal-stagger mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+      {
+        [
+          { label: '收录品牌', prefix: '', value: BRAND_STATS.total, unit: '家' },
+          { label: '最低月均', prefix: '¥', value: BRAND_STATS.minPrice, unit: '起' },
+          { label: '标注专线', prefix: '', value: BRAND_STATS.ieplCount, unit: '家' },
+          { label: '标注 AI 解锁', prefix: '', value: BRAND_STATS.aiCount, unit: '家' },
+        ].map((stat) => (
+          <div class="reveal card-lift rounded-lg border border-ink-100 bg-ink-50 px-4 py-3 dark:border-ink-700/40 dark:bg-ink-700/20">
+            <dt class="text-xs text-ink-500">{stat.label}</dt>
+            <dd class="mt-1 text-xl font-bold text-ink-900 dark:text-white">
+              {stat.prefix}
+              <span class="tabular-nums-anim" data-count-to={stat.value}>{stat.value}</span>
+              <span class="ml-0.5 text-xs font-normal text-ink-500">{stat.unit}</span>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <div class="mt-8 max-w-3xl">
+      <AffiliateDisclosure />
+    </div>
+
+    <section class="mt-10" aria-label="按需求筛选品牌">
+      <h2 class="text-lg font-bold text-ink-900 dark:text-white">按需求筛选</h2>
+      <div class="mt-3 flex flex-wrap gap-2" role="group" aria-label="品牌筛选">
+        {
+          FILTERS.map((filter, i) => (
+            <button
+              type="button"
+              data-filter={filter.key}
+              aria-pressed={i === 0 ? 'true' : 'false'}
+              class="brand-filter rounded-full border border-ink-100 px-4 py-1.5 text-sm font-medium text-ink-700 transition-colors duration-150 hover:border-brand-300 hover:text-brand-700 aria-pressed:border-brand-600 aria-pressed:bg-brand-600 aria-pressed:text-white dark:border-ink-700/40 dark:text-ink-300"
+            >
+              {filter.label}
+            </button>
+          ))
+        }
+      </div>
+      <p class="mt-2 text-xs text-ink-500" role="status" data-filter-status>
+        显示全部 {BRAND_STATS.total} 家品牌
+      </p>
+    </section>
+
+    <section class="mt-8" aria-label="品牌详情列表">
+      <div class="grid gap-6" data-brand-grid>
+        {
+          brands.map((brand) => {
+            const image = speedTestImage(brand.slug);
+            return (
+              <article
+                class="overflow-hidden rounded-lg border border-ink-100 bg-white dark:border-ink-700/40 dark:bg-ink-900"
+                data-brand-item
+                data-tags={brand.tags.join(' ')}
+              >
+                <div class="grid gap-0 lg:grid-cols-[minmax(0,1fr)_260px]">
+                  <div class="p-6">
+                    <div class="flex flex-wrap items-center gap-2">
+                      <h3 class="text-lg font-bold text-ink-900 dark:text-white">
+                        <a href={`/reviews/${brand.slug}/`} class="hover:text-brand-700 dark:hover:text-brand-300">
+                          {brand.name}
+                        </a>
+                      </h3>
+                      {brand.house && (
+                        <span class="rounded-full bg-brand-50 px-2 py-0.5 text-xs font-semibold text-brand-700 ring-1 ring-inset ring-brand-200 dark:bg-brand-900/40 dark:text-brand-300 dark:ring-brand-800">
+                          本站自有品牌
+                        </span>
+                      )}
+                      <span class="text-sm font-semibold text-brand-600 dark:text-brand-400">
+                        ¥{brand.minPrice} / {brand.minTraffic}G · {brand.minPriceCycle}
+                      </span>
+                    </div>
+                    <p class="mt-1.5 text-sm text-ink-500">{brand.tagline}</p>
+
+                    <dl class="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 text-sm sm:grid-cols-3">
+                      <div>
+                        <dt class="text-xs text-ink-500">线路类型</dt>
+                        <dd class="mt-0.5 text-ink-900 dark:text-white">{brand.lines.join(' / ')}</dd>
+                      </div>
+                      <div>
+                        <dt class="text-xs text-ink-500">协议</dt>
+                        <dd class="mt-0.5 text-ink-900 dark:text-white">
+                          {brand.protocols.length > 0 ? brand.protocols.join(' / ') : '暂未核实'}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt class="text-xs text-ink-500">开业时间</dt>
+                        <dd class="mt-0.5 text-ink-900 dark:text-white">
+                          {brand.established ?? '暂未核实'}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt class="text-xs text-ink-500">AI 工具</dt>
+                        <dd class="mt-0.5 text-ink-900 dark:text-white">{UNLOCK_LABEL[brand.aiSupport]}</dd>
+                      </div>
+                      <div>
+                        <dt class="text-xs text-ink-500">流媒体</dt>
+                        <dd class="mt-0.5 text-ink-900 dark:text-white">
+                          {UNLOCK_LABEL[brand.streamingSupport]}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt class="text-xs text-ink-500">每 GB 单价</dt>
+                        <dd class="mt-0.5 text-ink-900 dark:text-white">¥{brand.pricePerGb.toFixed(2)}</dd>
+                      </div>
+                    </dl>
+
+                    <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                      <div>
+                        <h4 class="text-xs font-semibold text-ink-900 dark:text-white">节点与网络特点</h4>
+                        <ul class="mt-1.5 space-y-1 text-xs text-ink-500">
+                          {brand.networkFeatures.map((f) => (
+                            <li>· {f}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div>
+                        <h4 class="text-xs font-semibold text-ink-900 dark:text-white">适合用户</h4>
+                        <ul class="mt-1.5 space-y-1 text-xs text-ink-500">
+                          {brand.targetUsers.slice(0, 3).map((u) => (
+                            <li>· {u}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div class="mt-4">
+                      <h4 class="text-xs font-semibold text-ink-900 dark:text-white">使用注意事项</h4>
+                      <ul class="mt-1.5 space-y-1 text-xs text-ink-500">
+                        {brand.cautions.map((c) => (
+                          <li>· {c}</li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div class="mt-4 flex flex-wrap gap-1.5">
+                      {brand.tags.map((tag) => (
+                        <span class="rounded-full bg-ink-50 px-2 py-0.5 text-xs text-ink-500 dark:bg-ink-700/30">
+                          {BRAND_TAG_LABEL[tag]}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div class="mt-5 flex flex-wrap items-center gap-3">
+                      <BrandCta brand={brand} placement="brand-library" size="md" />
+                      <a
+                        href={`/reviews/${brand.slug}/`}
+                        class="text-sm font-medium text-ink-500 transition-colors duration-150 hover:text-brand-600"
+                      >
+                        查看完整评测 →
+                      </a>
+                    </div>
+                    {brand.couponNote && (
+                      <p class="mt-2 text-xs text-ink-500">优惠说明：{brand.couponNote}</p>
+                    )}
+                  </div>
+
+                  {image && (
+                    <figure class="border-t border-ink-100 bg-ink-50 p-4 lg:border-l lg:border-t-0 dark:border-ink-700/40 dark:bg-ink-700/10">
+                      <a href={`/reviews/${brand.slug}/`} class="block overflow-hidden rounded border border-ink-100 dark:border-ink-700/40">
+                        <Image
+                          src={image}
+                          alt={`${brand.name}节点测速面板导出图，包含香港、台湾、新加坡、日本、美国节点的延迟与速度数据`}
+                          title={`${brand.name} 节点测速实测`}
+                          widths={[260, 520]}
+                          sizes="260px"
+                          format="webp"
+                          quality={80}
+                          loading="lazy"
+                          decoding="async"
+                          class="w-full"
+                        />
+                      </a>
+                      <figcaption class="mt-2 text-xs leading-relaxed text-ink-500">
+                        {brand.name} 测速面板导出图（原始数据未修改，测试时间已隐去，仅供参考）
+                      </figcaption>
+                    </figure>
+                  )}
+                </div>
+              </article>
+            );
+          })
+        }
+      </div>
+    </section>
+
+    <section class="mt-12" aria-label="全部品牌横向对比">
+      <h2 class="text-2xl font-bold text-ink-900 dark:text-white">全部品牌横向对比</h2>
+      <BrandTable
+        brands={brands}
+        caption="16 家机场品牌横向对比：价格、流量、每 GB 单价、线路、AI 与流媒体解锁、优惠码"
+        placement="brand-library-table"
+      />
+    </section>
+
+    <div class="mt-4 max-w-3xl">
+      <FaqSection faq={faq} title="关于品牌库的常见问题" />
+    </div>
+
+    <section class="mt-12 max-w-3xl" aria-label="下一步">
+      <h2 class="text-xl font-bold text-ink-900 dark:text-white">按你的需求继续</h2>
+      <ul class="mt-4 grid gap-3 sm:grid-cols-2">
+        {
+          [
+            { label: '2026 机场排行榜', href: '/airport/ranking/' },
+            { label: '便宜机场推荐', href: '/airport/budget/' },
+            { label: '专线机场推荐', href: '/airport/iepl/' },
+            { label: 'ChatGPT 机场推荐', href: '/airport/chatgpt/' },
+            { label: '流媒体解锁机场', href: '/airport/streaming/' },
+            { label: '机场优惠码汇总', href: '/airport/coupon/' },
+          ].map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class="block rounded-lg border border-ink-100 px-4 py-3 text-sm font-medium text-ink-900 transition-colors duration-150 hover:border-brand-300 hover:text-brand-700 dark:border-ink-700/40 dark:text-white dark:hover:border-brand-700"
+              >
+                {link.label} →
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  // 品牌库筛选：项目规范允许的「必要筛选」交互，纯原生实现
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.brand-filter');
+  const items = document.querySelectorAll<HTMLElement>('[data-brand-item]');
+  const status = document.querySelector<HTMLElement>('[data-filter-status]');
+
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const filter = button.dataset.filter;
+      if (!filter) return;
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
+      let visible = 0;
+      items.forEach((item) => {
+        const tags = (item.dataset.tags ?? '').split(' ');
+        const show = filter === 'all' || tags.includes(filter);
+        item.hidden = !show;
+        if (show) visible += 1;
+      });
+      if (status) {
+        status.textContent =
+          filter === 'all' ? `显示全部 ${visible} 家品牌` : `符合条件的品牌：${visible} 家`;
+      }
+    });
+  });
+</script>

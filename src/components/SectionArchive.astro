@@ -1,0 +1,32 @@
+---
+import ArchiveLayout from '@layouts/ArchiveLayout.astro';
+import { getPublished, toArchiveItem } from '@utils/collections';
+import type { ContentCollectionKey } from '@utils/collections';
+import { SECTIONS, SITE } from '@utils/site';
+
+interface Props {
+  collection: ContentCollectionKey;
+  /** 首屏引导语（区别于 meta description） */
+  intro: string;
+  pageTitle?: string;
+}
+
+const { collection, intro, pageTitle } = Astro.props;
+const section = SECTIONS[collection];
+if (!section) throw new Error(`未知栏目: ${collection}`);
+
+const entries = await getPublished(collection);
+const items = entries.map((entry) => toArchiveItem(collection, entry));
+---
+
+<ArchiveLayout
+  title={section.name}
+  pageTitle={pageTitle ?? `${section.name}｜${SITE.name}`}
+  description={section.description}
+  path={`/${collection}/`}
+  intro={intro}
+  items={items}
+>
+  <slot name="before-list" slot="before-list" />
+  <slot name="after-list" slot="after-list" />
+</ArchiveLayout>

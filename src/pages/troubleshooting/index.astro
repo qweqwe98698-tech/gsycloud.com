@@ -1,0 +1,24 @@
+---
+import SectionArchive from '@components/SectionArchive.astro';
+---
+
+<SectionArchive
+  collection="troubleshooting"
+  pageTitle="故障排查中心｜节点超时、订阅失败、连接异常解决方案｜GSY Cloud"
+  intro="节点全部超时、订阅更新失败、延迟突然升高、Clash 无法连接——每篇故障文章都按「症状 → 最快解决方法 → 可能原因 → 逐项排查 → 验证」的结构撰写，帮助你在最短时间内定位并解决问题。"
+>
+  <div slot="after-list" class="prose prose-slate mt-12 max-w-3xl dark:prose-invert">
+    <h2>排查思路总览</h2>
+    <p>大多数代理连接问题可以归入四类，按顺序检查通常最快：</p>
+    <ol>
+      <li><strong>订阅问题</strong>：订阅过期、流量用尽、订阅链接失效 → 先在官网确认账户状态。</li>
+      <li><strong>节点问题</strong>：个别节点故障或被临时封锁 → 切换其他地区节点对比。</li>
+      <li><strong>客户端问题</strong>：配置错误、内核异常、系统代理未生效 → 重启客户端并检查设置。</li>
+      <li><strong>本地网络问题</strong>：本地 DNS、防火墙、运营商网络波动 → 换网络环境交叉验证。</li>
+    </ol>
+    <p>
+      理解背后原理有助于更快定位问题：见<a href="/network/">线路与网络知识</a>与
+      <a href="/protocols/">协议知识</a>。
+    </p>
+  </div>
+</SectionArchive>

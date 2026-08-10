@@ -1,0 +1,186 @@
+---
+import type { MarkdownHeading } from 'astro';
+import { getEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumb from '@components/Breadcrumb.astro';
+import Badge from '@components/Badge.astro';
+import TableOfContents from '@components/TableOfContents.astro';
+import FaqSection from '@components/FaqSection.astro';
+import RelatedPosts from '@components/RelatedPosts.astro';
+import TagList from '@components/TagList.astro';
+import PrevNextNav from '@components/PrevNextNav.astro';
+import { SITE, SECTIONS } from '@utils/site';
+import { postUrl } from '@utils/url';
+import { formatDate, isoDate, readingTime, getAdjacent } from '@utils/content';
+import type { ContentType, DataStatus } from '@utils/content';
+import { articleSchema, breadcrumbSchema, faqSchema, personSchema } from '@utils/schema';
+import type { Crumb } from '@utils/schema';
+import { resolveRelated } from '@utils/related';
+import { getPublished } from '@utils/collections';
+import type { ContentCollectionKey } from '@utils/collections';
+
+interface ArticleData {
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate: Date;
+  category: string;
+  tags: string[];
+  author: string;
+  primaryKeyword: string;
+  searchIntent: string;
+  pillar: string | null;
+  relatedSlugs: string[];
+  faq: { question: string; answer: string }[];
+  sources: { name: string; url: string }[];
+  contentType: ContentType;
+  dataStatus: DataStatus;
+}
+
+interface Props {
+  collection: ContentCollectionKey;
+  id: string;
+  data: ArticleData;
+  headings: MarkdownHeading[];
+  body: string;
+  /** 中间层级面包屑（首页与文章标题自动补齐） */
+  midCrumbs?: Crumb[];
+}
+
+const { collection, id, data, headings, body, midCrumbs } = Astro.props;
+
+const path = postUrl(collection, id);
+const section = SECTIONS[collection];
+const crumbs: Crumb[] = [
+  { name: '首页', path: '/' },
+  ...(midCrumbs ?? (section ? [{ name: section.name, path: `/${collection}/` }] : [])),
+  { name: data.title, path },
+];
+
+const authorEntry = await getEntry('authors', data.author);
+const authorName = authorEntry?.data.name ?? 'GSY Cloud 编辑部';
+const minutes = readingTime(body);
+const related = await resolveRelated(data.relatedSlugs);
+
+// 同栏目内按更新时间前后导航，构成内部链接网络的最后一环
+const siblings = await getPublished(collection);
+const { prev, next } = getAdjacent(siblings, id, (entry) => entry.id);
+const prevItem = prev ? { title: prev.data.title, href: postUrl(collection, prev.id) } : null;
+const nextItem = next ? { title: next.data.title, href: postUrl(collection, next.id) } : null;
+
+const schema: object[] = [
+  breadcrumbSchema(crumbs),
+  articleSchema({
+    title: data.title,
+    description: data.description,
+    path,
+    pubDate: data.pubDate,
+    updatedDate: data.updatedDate,
+    authorName,
+    authorId: data.author,
+  }),
+];
+if (authorEntry) {
+  // 完整 Person 节点与 articleSchema 里的 @id 引用对应，避免单页抓取时引用悬空
+  schema.push(personSchema(authorEntry.data));
+}
+if (data.faq.length > 0) schema.push(faqSchema(data.faq));
+
+const pageTitle = `${data.title}｜${SITE.name}`;
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={data.description}
+  path={path}
+  ogType="article"
+  article={{
+    publishedTime: data.pubDate.toISOString(),
+    modifiedTime: data.updatedDate.toISOString(),
+    author: authorName,
+  }}
+  schema={schema}
+>
+  <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+    <Breadcrumb crumbs={crumbs} />
+
+    <div class="mt-6 grid gap-10 lg:grid-cols-[minmax(0,1fr)_240px]">
+      <article data-pagefind-body>
+        <header>
+          <div class="flex flex-wrap items-center gap-2">
+            <Badge contentType={data.contentType} />
+            <Badge dataStatus={data.dataStatus} />
+          </div>
+          <h1 class="mt-3 text-3xl font-bold leading-tight tracking-tight text-ink-900 sm:text-4xl dark:text-white">
+            {data.title}
+          </h1>
+          <p class="mt-3 text-base leading-relaxed text-ink-500">{data.description}</p>
+          <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-ink-500">
+            <span>{authorName}</span>
+            <span>
+              发布于 <time datetime={isoDate(data.pubDate)}>{formatDate(data.pubDate)}</time>
+            </span>
+            <span>
+              更新于 <time datetime={isoDate(data.updatedDate)}>{formatDate(data.updatedDate)}</time>
+            </span>
+            <span>约 {minutes} 分钟阅读</span>
+          </div>
+        </header>
+
+        {
+          data.dataStatus === 'example' && (
+            <p class="mt-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+              本文部分内容为结构与流程示例，用于说明方法与界面逻辑，具体数据请以官方页面或实际测试为准。
+            </p>
+          )
+        }
+
+        <div class="lg:hidden">
+          <div class="mt-6 rounded-lg border border-ink-100 bg-ink-50 p-4 dark:border-ink-700/40 dark:bg-ink-900">
+            <TableOfContents headings={headings} />
+          </div>
+        </div>
+
+        <div
+          class="prose prose-slate mt-8 max-w-none dark:prose-invert prose-headings:scroll-mt-24 prose-a:text-brand-600 prose-a:decoration-brand-300 hover:prose-a:text-brand-700 dark:prose-a:text-brand-400"
+        >
+          <slot />
+        </div>
+
+        <TagList tags={data.tags} />
+        <FaqSection faq={data.faq} />
+        <RelatedPosts links={related} />
+
+        {
+          data.sources.length > 0 && (
+            <section class="mt-10" aria-label="参考资料">
+              <h2 class="text-base font-semibold text-ink-900 dark:text-white">参考资料</h2>
+              <ul class="mt-2 list-inside list-disc space-y-1 text-sm text-ink-500">
+                {data.sources.map((source) => (
+                  <li>
+                    <a
+                      href={source.url}
+                      rel="nofollow noopener"
+                      target="_blank"
+                      class="text-brand-600 hover:underline dark:text-brand-400"
+                    >
+                      {source.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
+
+        <PrevNextNav prev={prevItem} next={nextItem} />
+      </article>
+
+      <aside class="hidden lg:block" aria-label="侧边栏">
+        <div class="sticky top-24 space-y-6">
+          <TableOfContents headings={headings} />
+        </div>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>

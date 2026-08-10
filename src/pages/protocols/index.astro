@@ -1,0 +1,19 @@
+---
+import SectionArchive from '@components/SectionArchive.astro';
+---
+
+<SectionArchive
+  collection="protocols"
+  pageTitle="协议知识库｜Shadowsocks、Trojan、VLESS、Hysteria2 详解｜GSY Cloud"
+  intro="Shadowsocks、Trojan、VLESS、VMess、Hysteria2、TUIC、Reality——每篇协议文章按「是什么 → 工作原理 → 特点 → 使用场景 → 客户端支持 → 与其他协议对比」的统一结构撰写，帮助你理解机场节点背后的技术差异。"
+>
+  <div slot="after-list" class="prose prose-slate mt-12 max-w-3xl dark:prose-invert">
+    <h2>协议选择的一般思路</h2>
+    <p>
+      对绝大多数用户来说，协议由机场决定，无需自行选择；理解协议差异的价值在于：看懂机场的套餐说明、
+      判断节点与客户端的兼容性、以及在故障时缩小排查范围。新用户建议从
+      <a href="/protocols/vless-vs-vmess/">VLESS 和 VMess 的区别</a>开始阅读，
+      配合<a href="/network/">线路知识</a>理解协议与线路的分工。
+    </p>
+  </div>
+</SectionArchive>

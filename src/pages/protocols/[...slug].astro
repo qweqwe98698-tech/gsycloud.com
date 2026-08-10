@@ -1,0 +1,13 @@
+---
+import ArticlePage from '@components/ArticlePage.astro';
+import { getPublished } from '@utils/collections';
+
+export async function getStaticPaths() {
+  const entries = await getPublished('protocols');
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+---
+
+<ArticlePage collection="protocols" entry={entry} />

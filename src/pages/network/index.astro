@@ -1,0 +1,19 @@
+---
+import SectionArchive from '@components/SectionArchive.astro';
+---
+
+<SectionArchive
+  collection="network"
+  pageTitle="线路与网络知识｜IPLC、IEPL、原生 IP、DNS 详解｜GSY Cloud"
+  intro="IPLC 和 IEPL 有什么区别？原生 IP 为什么重要？晚高峰为什么会变慢？本栏目系统整理线路类型、IP 属性、DNS、延迟与带宽等网络基础知识，是理解机场差异与排查问题的底层依据。"
+>
+  <div slot="after-list" class="prose prose-slate mt-12 max-w-3xl dark:prose-invert">
+    <h2>为什么要理解线路知识</h2>
+    <p>
+      机场之间价格差距的主要来源就是线路成本：专线（IPLC / IEPL）、中转与公网直连的体验差异，
+      在晚高峰时段尤其明显。理解这些概念后，你可以看懂机场的套餐说明，判断价格是否合理。建议从
+      <a href="/network/what-is-iplc/">IPLC 是什么</a>与<a href="/network/iplc-vs-iepl/">IPLC 和 IEPL 的区别</a>开始。
+      与协议层的关系可参考<a href="/protocols/">协议知识库</a>。
+    </p>
+  </div>
+</SectionArchive>

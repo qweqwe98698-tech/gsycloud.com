@@ -1,0 +1,55 @@
+---
+import ArchiveLayout from '@layouts/ArchiveLayout.astro';
+import { getPublished, toArchiveItem } from '@utils/collections';
+import { BRAND_TOPICS } from '@data/airports/topics';
+import { SITE } from '@utils/site';
+
+const entries = await getPublished('airport');
+const items = entries.map((entry) => toArchiveItem('airport', entry));
+---
+
+<ArchiveLayout
+  title="机场选购指南"
+  pageTitle={`机场推荐与选购指南｜按需求选对机场的方法｜${SITE.name}`}
+  description="机场选购指南：按预算、稳定性、AI 与流媒体等真实需求整理的机场选择方法与专题榜单，包含判断标准、成本逻辑与避坑要点，而不是简单罗列排行榜。"
+  path="/airport/"
+  intro="选机场的关键不是找到「最好的那一家」，而是先明确自己的需求类型。本栏目分为两部分：按需求划分的专题榜单，以及建立判断标准的选购方法文章。"
+  items={items}
+>
+  <div slot="before-list" class="mt-10">
+    <h2 class="text-lg font-bold text-ink-900 dark:text-white">按需求查看专题榜单</h2>
+    <p class="mt-1.5 text-sm text-ink-500">每个专题对应一类明确需求，含精选档位、横向对比表与常见疑问解答。</p>
+    <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        BRAND_TOPICS.map((topic) => (
+          <a
+            href={`/airport/${topic.slug}/`}
+            class="rounded-lg border border-ink-100 p-4 transition-colors duration-150 hover:border-brand-300 hover:bg-brand-50/50 dark:border-ink-700/40 dark:hover:border-brand-700 dark:hover:bg-brand-900/20"
+          >
+            <span class="font-semibold text-ink-900 dark:text-white">{topic.h1}</span>
+            <span class="mt-1 line-clamp-2 block text-sm text-ink-500">{topic.directAnswer}</span>
+          </a>
+        ))
+      }
+    </div>
+    <h2 class="mt-10 text-lg font-bold text-ink-900 dark:text-white">选购方法与判断标准</h2>
+    <p class="mt-1.5 text-sm text-ink-500">
+      不针对具体品牌，而是帮你建立可复用的判断标准——这些方法在任何时候选机场都适用。
+    </p>
+  </div>
+
+  <div slot="after-list" class="prose prose-slate mt-12 max-w-3xl dark:prose-invert">
+    <h2>建议的阅读顺序</h2>
+    <ol>
+      <li>先读<a href="/airport/beginners/">新手如何选择机场</a>，弄清机场、节点、订阅三者的关系与常见误区；</li>
+      <li>再读<a href="/airport/value/">高性价比机场应该怎么看</a>，理解价格背后的线路成本逻辑；</li>
+      <li>用<a href="/airport/monthly/">月付还是年付</a>确定你能接受的付费周期与风险敞口；</li>
+      <li>最后到<a href="/airport/ranking/">2026 机场排行榜</a>或对应专题页筛选具体档位。</li>
+    </ol>
+    <p>
+      选定后，配置环节见<a href="/tutorials/">客户端教程</a>；遇到连接问题查<a href="/troubleshooting/">故障排查中心</a>；
+      长期使用建议了解<a href="/risk/exit-scam-warning-signs/">机场跑路的常见前兆</a>，避免长期套餐踩坑。
+      全部品牌的结构化资料与测速图见<a href="/brands/">机场品牌库</a>。
+    </p>
+  </div>
+</ArchiveLayout>

@@ -1,0 +1,37 @@
+---
+interface Props {
+  faq: { question: string; answer: string }[];
+  title?: string;
+}
+const { faq, title = '常见问题' } = Astro.props;
+---
+
+{
+  faq.length > 0 && (
+    <section class="not-prose mt-10" aria-label={title}>
+      <h2 class="text-xl font-bold text-ink-900 dark:text-white">{title}</h2>
+      <div class="mt-4 divide-y divide-ink-100 rounded-lg border border-ink-100 dark:divide-ink-700/40 dark:border-ink-700/40">
+        {faq.map((item) => (
+          <details class="group px-5 py-4 open:bg-ink-50/60 dark:open:bg-ink-700/10">
+            <summary class="-mx-2 flex cursor-pointer list-none items-center justify-between gap-3 rounded-md px-2 py-1 text-sm font-semibold text-ink-900 transition-colors duration-150 hover:text-brand-700 dark:text-white dark:hover:text-brand-300">
+              {item.question}
+              <svg
+                class="h-4 w-4 shrink-0 text-ink-400 transition-transform duration-200 group-open:rotate-180 group-open:text-brand-600 dark:group-open:text-brand-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </summary>
+            <p class="mt-3 border-l-2 border-brand-200 pl-3 text-sm leading-relaxed text-ink-700 dark:border-brand-800 dark:text-ink-300">
+              {item.answer}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+  )
+}

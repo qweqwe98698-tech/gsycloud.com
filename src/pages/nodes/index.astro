@@ -1,0 +1,19 @@
+---
+import SectionArchive from '@components/SectionArchive.astro';
+---
+
+<SectionArchive
+  collection="nodes"
+  pageTitle="节点知识｜代理节点、订阅与测速指南｜GSY Cloud"
+  intro="什么是代理节点、订阅链接如何使用、免费节点有哪些限制与风险、节点延迟和速度受什么影响——本栏目系统整理节点相关的基础知识与使用方法。强时效内容会标注更新时间与信息状态。"
+>
+  <div slot="after-list" class="prose prose-slate mt-12 max-w-3xl dark:prose-invert">
+    <h2>节点知识学习路径</h2>
+    <p>
+      建议先从<a href="/nodes/what-is-a-proxy-node/">什么是代理节点</a>开始，理解节点、订阅与客户端三者的关系；
+      再阅读<a href="/nodes/free-nodes-guide/">免费节点怎么使用</a>，了解免费资源的获取方式与安全边界。
+      配置环节请参考<a href="/tutorials/">客户端教程</a>；节点超时、延迟高等问题请查看
+      <a href="/troubleshooting/">故障排查中心</a>。
+    </p>
+  </div>
+</SectionArchive>

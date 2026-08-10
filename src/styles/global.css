@@ -1,0 +1,318 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+/* class 策略暗色模式：ThemeToggle 在 <html> 上切换 .dark */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* GSY Cloud 品牌色 —— 云蓝 */
+  --color-brand-50: #eff6ff;
+  --color-brand-100: #dbeafe;
+  --color-brand-200: #bfdbfe;
+  --color-brand-300: #93c5fd;
+  --color-brand-400: #60a5fa;
+  --color-brand-500: #3b82f6;
+  --color-brand-600: #2563eb;
+  --color-brand-700: #1d4ed8;
+  --color-brand-800: #1e40af;
+  --color-brand-900: #1e3a8a;
+
+  /* 中性色（深灰蓝正文） */
+  --color-ink-900: #0f172a;
+  --color-ink-700: #334155;
+  --color-ink-500: #64748b;
+  --color-ink-300: #cbd5e1;
+  --color-ink-100: #f1f5f9;
+  --color-ink-50: #f8fafc;
+
+  --font-sans:
+    system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
+    'Noto Sans SC', sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', 'Courier New', monospace;
+
+  /* 统一缓动曲线：交互动作稍快（out-expo 感），进入动画稍柔和 */
+  --ease-snap: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* 分层阴影（克制的科技感，非重投影）；暗色模式下改用更亮的边框替代阴影 */
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04), 0 1px 3px rgb(15 23 42 / 0.06);
+  --shadow-card-hover: 0 8px 24px -8px rgb(15 23 42 / 0.14), 0 2px 6px -2px rgb(15 23 42 / 0.08);
+  --shadow-float: 0 12px 32px -12px rgb(15 23 42 / 0.18);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  @apply bg-white text-ink-700 antialiased dark:bg-ink-900 dark:text-ink-300;
+  transition:
+    background-color 0.25s var(--ease-soft),
+    color 0.25s var(--ease-soft);
+}
+
+/* 可见焦点样式（可访问性） */
+:focus-visible {
+  outline: 2px solid var(--color-brand-600);
+  outline-offset: 2px;
+}
+
+/* Shiki 代码块暗色主题切换 */
+.dark .astro-code,
+.dark .astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+}
+
+/* 文章标题锚点 */
+.prose .heading-anchor {
+  text-decoration: none;
+  font-weight: inherit;
+  color: inherit;
+}
+.prose .heading-anchor:hover::after {
+  content: ' #';
+  color: var(--color-brand-500);
+}
+
+/* 表格横向滚动容器由 prose 内 table 自动处理 */
+.prose table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+@media (min-width: 768px) {
+  .prose table {
+    display: table;
+    white-space: normal;
+  }
+}
+
+/* TOC 当前位置高亮：与 hover 用同一条左边框机制，仅颜色更深、字重更强，视觉上连贯 */
+.toc-link.is-active {
+  color: var(--color-brand-600);
+  font-weight: 600;
+  border-left-color: var(--color-brand-600) !important;
+  background: color-mix(in srgb, var(--color-brand-50) 70%, transparent);
+}
+.dark .toc-link.is-active {
+  color: var(--color-brand-400);
+  border-left-color: var(--color-brand-400) !important;
+  background: color-mix(in srgb, var(--color-brand-900) 30%, transparent);
+}
+
+/* ============================================================
+ * 卡片高级感：分层阴影 + 位移，克制而非炫技
+ * ============================================================ */
+.card-lift {
+  box-shadow: var(--shadow-card);
+  transition:
+    transform 0.2s var(--ease-snap),
+    box-shadow 0.2s var(--ease-snap),
+    border-color 0.2s var(--ease-soft);
+}
+.card-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
+}
+.dark .card-lift {
+  box-shadow: none; /* 暗色背景下阴影可读性差，改用边框对比表达层级 */
+}
+.dark .card-lift:hover {
+  box-shadow: none;
+}
+
+/* ============================================================
+ * 渐进增强的滚动进场动画。
+ *
+ * 关键约束（对应 SEO/GEO 与性能规范）：
+ * 1. 默认（无 .js-reveal-ready）一律可见——不依赖 JS 才能看到内容；
+ *    爬虫、禁用 JS 的浏览器、脚本执行失败时，页面显示不受任何影响。
+ * 2. 只有当 head 内联脚本确认 JS 可执行、且 IntersectionObserver 可用时，
+ *    才会先让 .reveal 元素处于起始状态，再由脚本按滚动位置逐个揭示。
+ * 3. 只用 opacity / transform，不触发布局重排，不产生 CLS。
+ * 4. 首屏关键内容（Hero）不套用该类，避免拖慢 LCP。
+ * ============================================================ */
+.js-reveal-ready .reveal {
+  opacity: 0;
+  transform: translateY(16px);
+}
+.js-reveal-ready .reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.5s var(--ease-soft),
+    transform 0.5s var(--ease-soft);
+}
+/* 逐项错开的卡片网格：子元素按序增加一点延迟，形成"依次浮现"的节奏感 */
+.js-reveal-ready .reveal-stagger > .reveal:nth-child(1) { transition-delay: 0ms; }
+.js-reveal-ready .reveal-stagger > .reveal:nth-child(2) { transition-delay: 60ms; }
+.js-reveal-ready .reveal-stagger > .reveal:nth-child(3) { transition-delay: 120ms; }
+.js-reveal-ready .reveal-stagger > .reveal:nth-child(4) { transition-delay: 180ms; }
+.js-reveal-ready .reveal-stagger > .reveal:nth-child(5) { transition-delay: 240ms; }
+.js-reveal-ready .reveal-stagger > .reveal:nth-child(6) { transition-delay: 300ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .js-reveal-ready .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 品牌渐变强调：小范围点缀用，不做满屏渐变背景 */
+.brand-accent-text {
+  background: linear-gradient(120deg, var(--color-brand-600), var(--color-brand-400));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.dark .brand-accent-text {
+  background: linear-gradient(120deg, var(--color-brand-400), var(--color-brand-300));
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+/* 数字变化的等宽过渡，避免计数动画时数字宽度跳动造成的轻微抖动 */
+.tabular-nums-anim {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+ * Header 导航
+ * ============================================================ */
+/* 桌面导航当前项：底部细线指示器；未选中项 hover 时线条淡入到一半，给出反馈但不喧宾夺主 */
+.nav-link {
+  isolation: isolate;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 3px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--color-brand-600);
+  transform: scaleX(0);
+  transition: transform 0.2s var(--ease-snap);
+}
+.dark .nav-link::after {
+  background: var(--color-brand-400);
+}
+.nav-link.is-active::after {
+  transform: scaleX(1);
+}
+.nav-link:not(.is-active):hover::after {
+  transform: scaleX(0.5);
+  opacity: 0.5;
+}
+
+/* 移动端菜单：CSS Grid rows 技巧实现 height:auto 的平滑展开/收起，无需 JS 测量高度。
+   用独立 class 而非 #mobile-menu，避免 ID 选择器特异性压过 Tailwind 的 lg:hidden。 */
+.mobile-menu-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s var(--ease-soft);
+}
+.mobile-menu-collapse.is-open {
+  grid-template-rows: 1fr;
+}
+
+/* ============================================================
+ * 品牌对比表：桌面表格 / 移动端卡片，同一套 DOM 只切换 CSS 呈现。
+ * 数据只有一份，排序脚本对两种呈现同时生效；两种呈现下原始 HTML
+ * 中的字段与链接完全一致，抓取与可访问性不因视口而变化。
+ * ============================================================ */
+@media (min-width: 768px) {
+  .responsive-table-wrap {
+    overflow-x: auto;
+  }
+  .responsive-compare-table {
+    min-width: 820px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .responsive-compare-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+  .responsive-compare-table,
+  .responsive-compare-table tbody,
+  .responsive-compare-table tr {
+    display: block;
+    width: 100%;
+  }
+  .responsive-compare-table tr {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-ink-100);
+  }
+  .dark .responsive-compare-table tr {
+    border-bottom-color: rgb(51 65 85 / 0.4);
+  }
+  .responsive-compare-table tr:last-child {
+    border-bottom: none;
+  }
+  .responsive-compare-table td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 0;
+  }
+  .responsive-compare-table td[data-label]::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-ink-500);
+  }
+  /* 机场名称作为卡片标题：不参与 label:value 排布，独占一行并加下分隔线 */
+  .responsive-compare-table td.cell-name {
+    padding: 0 0 8px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid var(--color-ink-100);
+    font-size: 1rem;
+  }
+  .dark .responsive-compare-table td.cell-name {
+    border-bottom-color: rgb(51 65 85 / 0.4);
+  }
+  /* 注册链接在卡片视图下升级为满宽按钮，扩大移动端点击区域 */
+  .responsive-compare-table td.cell-action {
+    padding: 10px 0 0;
+    margin-top: 4px;
+  }
+  .responsive-compare-table td.cell-action a {
+    display: block;
+    width: 100%;
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-align: center;
+    background: var(--color-brand-600);
+    color: #fff;
+    font-weight: 600;
+  }
+  .responsive-compare-table td.cell-action a:hover {
+    background: var(--color-brand-700);
+    text-decoration: none;
+  }
+}

@@ -1,0 +1,61 @@
+---
+/**
+ * 上一篇 / 下一篇导航：真实可抓取的 <a> 链接，构成完整内部链接网络的一环
+ * （导航 + 面包屑 + 相关文章 + 本组件 = 每篇文章至少 4 类内链入口）。
+ */
+export interface PrevNextItem {
+  title: string;
+  href: string;
+}
+
+interface Props {
+  prev: PrevNextItem | null;
+  next: PrevNextItem | null;
+  /** 上一条/下一条的语义标签，评测页用"更便宜/更贵"，文章页用默认的"上一篇/下一篇" */
+  prevLabel?: string;
+  nextLabel?: string;
+}
+const { prev, next, prevLabel = '上一篇', nextLabel = '下一篇' } = Astro.props;
+---
+
+{
+  (prev || next) && (
+    <nav
+      class="not-prose mt-10 grid gap-3 border-t border-ink-100 pt-6 sm:grid-cols-2 dark:border-ink-700/40"
+      aria-label="上一篇下一篇导航"
+    >
+      {prev ? (
+        <a
+          href={prev.href}
+          class="card-lift group flex flex-col rounded-lg border border-ink-100 p-4 hover:border-brand-300 hover:bg-brand-50/50 dark:border-ink-700/40 dark:hover:border-brand-700 dark:hover:bg-brand-900/20"
+        >
+          <span class="inline-flex items-center gap-1 text-xs text-ink-500">
+            <span class="transition-transform duration-150 group-hover:-translate-x-0.5" aria-hidden="true">←</span>
+            {prevLabel}
+          </span>
+          <span class="mt-1 line-clamp-2 text-sm font-medium text-ink-900 group-hover:text-brand-700 dark:text-white dark:group-hover:text-brand-300">
+            {prev.title}
+          </span>
+        </a>
+      ) : (
+        <span />
+      )}
+      {next ? (
+        <a
+          href={next.href}
+          class="card-lift group flex flex-col rounded-lg border border-ink-100 p-4 text-right hover:border-brand-300 hover:bg-brand-50/50 dark:border-ink-700/40 dark:hover:border-brand-700 dark:hover:bg-brand-900/20"
+        >
+          <span class="inline-flex items-center justify-end gap-1 text-xs text-ink-500">
+            {nextLabel}
+            <span class="transition-transform duration-150 group-hover:translate-x-0.5" aria-hidden="true">→</span>
+          </span>
+          <span class="mt-1 line-clamp-2 text-sm font-medium text-ink-900 group-hover:text-brand-700 dark:text-white dark:group-hover:text-brand-300">
+            {next.title}
+          </span>
+        </a>
+      ) : (
+        <span />
+      )}
+    </nav>
+  )
+}

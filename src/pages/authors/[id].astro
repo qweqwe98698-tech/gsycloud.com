@@ -1,0 +1,34 @@
+---
+import { getCollection } from 'astro:content';
+import ArchiveLayout from '@layouts/ArchiveLayout.astro';
+import { getAllPublished } from '@utils/collections';
+import { toArchiveItem } from '@utils/collections';
+import { SITE } from '@utils/site';
+import { personSchema } from '@utils/schema';
+
+export async function getStaticPaths() {
+  const authors = await getCollection('authors');
+  return authors.map((author) => ({ params: { id: author.id }, props: { author } }));
+}
+
+const { author } = Astro.props;
+const all = await getAllPublished();
+const items = all
+  .filter(({ entry }) => entry.data.author === author.id)
+  .map(({ collection, entry }) => toArchiveItem(collection, entry));
+---
+
+<ArchiveLayout
+  title={author.data.name}
+  pageTitle={`${author.data.name}｜作者主页｜${SITE.name}`}
+  description={`${author.data.name}（${author.data.role}）：${author.data.bio}`}
+  path={`/authors/${author.id}/`}
+  intro={author.data.bio}
+  items={items}
+  midCrumbs={[{ name: '作者团队', path: '/authors/' }]}
+  extraSchema={[personSchema(author.data)]}
+>
+  <p slot="before-list" class="mt-4 text-sm text-ink-500">
+    专业领域：{author.data.expertise.join('、')}
+  </p>
+</ArchiveLayout>

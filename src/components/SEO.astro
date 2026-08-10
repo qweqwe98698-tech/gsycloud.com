@@ -1,0 +1,77 @@
+---
+import { SITE } from '@utils/site';
+import { canonicalUrl } from '@utils/url';
+import { organizationSchema, webSiteSchema, jsonLdGraph } from '@utils/schema';
+
+interface Props {
+  title: string;
+  description: string;
+  /** 页面路径（如 /tutorials/clash/），用于 canonical */
+  path: string;
+  ogType?: 'website' | 'article';
+  noindex?: boolean;
+  ogImage?: string;
+  article?: {
+    publishedTime: string;
+    modifiedTime: string;
+    author: string;
+  };
+  /** 额外 JSON-LD 节点（Breadcrumb、Article、FAQ 等） */
+  schema?: object[];
+}
+
+const {
+  title,
+  description,
+  path,
+  ogType = 'website',
+  noindex = false,
+  ogImage = '/og-default.png',
+  article,
+  schema = [],
+} = Astro.props;
+
+const canonical = canonicalUrl(path);
+const ogImageUrl = new URL(ogImage, SITE.url).href;
+const graph = jsonLdGraph([organizationSchema(), webSiteSchema(), ...schema]);
+
+/**
+ * Google Search Console / Bing Webmaster Tools 的 meta 标签验证入口。
+ * 站方在 Cloudflare Pages 项目设置中配置对应环境变量后，构建产物会自动
+ * 带上验证标签；未配置时不渲染任何内容，不写死或虚构验证码。
+ * 见 README「部署后需要站长完成的事项」。
+ */
+const googleSiteVerification = process.env.GOOGLE_SITE_VERIFICATION;
+const bingSiteVerification = process.env.BING_SITE_VERIFICATION;
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex,follow" />}
+{googleSiteVerification && <meta name="google-site-verification" content={googleSiteVerification} />}
+{bingSiteVerification && <meta name="msvalidate.01" content={bingSiteVerification} />}
+
+<meta property="og:type" content={ogType} />
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImageUrl} />
+{
+  article && (
+    <>
+      <meta property="article:published_time" content={article.publishedTime} />
+      <meta property="article:modified_time" content={article.modifiedTime} />
+      <meta property="article:author" content={article.author} />
+    </>
+  )
+}
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageUrl} />
+
+<script is:inline type="application/ld+json" set:html={graph} />

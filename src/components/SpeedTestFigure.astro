@@ -1,0 +1,40 @@
+---
+import { Image } from 'astro:assets';
+import type { AirportBrand } from '@data/airports/brands';
+import { speedTestImage } from '@utils/brand-images';
+
+interface Props {
+  brand: AirportBrand;
+  /** 图片说明，各品牌应结合自身线路特点撰写，避免模板化 */
+  caption: string;
+}
+const { brand, caption } = Astro.props;
+const image = speedTestImage(brand.slug);
+---
+
+{
+  image && (
+    <figure class="not-prose my-8">
+      <div class="overflow-hidden rounded-lg border border-ink-100 dark:border-ink-700/40">
+        <Image
+          src={image}
+          alt={`${brand.name}节点测速面板导出图：包含香港、台湾、新加坡、日本、美国等地区节点的延迟 RTT、HTTP 延迟、平均速度与最大速度数据`}
+          title={`${brand.name} 节点测速实测数据`}
+          widths={[420, 700, image.width]}
+          sizes="(max-width: 640px) 100vw, 700px"
+          format="webp"
+          quality={80}
+          loading="lazy"
+          decoding="async"
+          class="w-full"
+        />
+      </div>
+      <figcaption class="mt-2 text-xs leading-relaxed text-ink-500">
+        {caption}
+        <span class="mt-1 block">
+          说明：该图为测速面板导出结果，原始测速数据未做修改，测试时间已隐去。测速结果受线路波动、测试时段与本地网络影响，仅供参考，不代表你的实际体验。
+        </span>
+      </figcaption>
+    </figure>
+  )
+}

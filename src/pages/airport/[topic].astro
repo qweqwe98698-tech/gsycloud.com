@@ -1,0 +1,168 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Breadcrumb from '@components/Breadcrumb.astro';
+import BrandCard from '@components/BrandCard.astro';
+import BrandTable from '@components/BrandTable.astro';
+import GeoAnswer from '@components/GeoAnswer.astro';
+import FaqSection from '@components/FaqSection.astro';
+import AffiliateDisclosure from '@components/AffiliateDisclosure.astro';
+import { BRAND_TOPICS } from '@data/airports/topics';
+import { AIRPORT_BRANDS, getBrand, sortHouseFirstThenValue } from '@data/airports/brands';
+import { breadcrumbSchema, faqSchema, collectionPageSchema } from '@utils/schema';
+import { formatDate, isoDate } from '@utils/content';
+
+export async function getStaticPaths() {
+  return BRAND_TOPICS.map((topic) => ({ params: { topic: topic.slug }, props: { topic } }));
+}
+
+const { topic } = Astro.props;
+const path = `/airport/${topic.slug}/`;
+
+const picks = topic.picks
+  .map((pick) => ({ brand: getBrand(pick.slug), reason: pick.reason }))
+  .filter((p): p is { brand: NonNullable<ReturnType<typeof getBrand>>; reason: string } =>
+    Boolean(p.brand),
+  );
+
+const tableBrands =
+  topic.tableScope === 'all'
+    ? [...AIRPORT_BRANDS].sort(sortHouseFirstThenValue)
+    : picks.map((p) => p.brand);
+
+const crumbs = [
+  { name: '首页', path: '/' },
+  { name: '机场推荐', path: '/airport/' },
+  { name: topic.h1, path },
+];
+
+// 页面最近更新时间以品牌数据维护节奏为准
+const updatedDate = new Date('2026-08-10');
+
+const schema = [
+  breadcrumbSchema(crumbs),
+  collectionPageSchema({
+    name: topic.h1,
+    description: topic.description,
+    path,
+    items: tableBrands.map((b) => ({ name: b.name, path: `/reviews/${b.slug}/` })),
+  }),
+  faqSchema(topic.faq),
+];
+---
+
+<BaseLayout title={topic.pageTitle} description={topic.description} path={path} schema={schema}>
+  <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+    <Breadcrumb crumbs={crumbs} />
+
+    <header class="mt-6 max-w-3xl">
+      <h1 class="text-3xl font-bold leading-tight tracking-tight text-ink-900 sm:text-4xl dark:text-white">
+        {topic.h1}
+      </h1>
+      <p class="mt-4 text-base leading-relaxed text-ink-700 dark:text-ink-300">
+        {topic.directAnswer}
+      </p>
+      <p class="mt-3 text-sm text-ink-500">
+        最近更新：<time datetime={isoDate(updatedDate)}>{formatDate(updatedDate)}</time>
+      </p>
+    </header>
+
+    <div class="mt-6 max-w-3xl">
+      <AffiliateDisclosure />
+    </div>
+
+    <section class="mt-10 max-w-3xl" aria-label="核心要点">
+      <h2 class="text-xl font-bold text-ink-900 dark:text-white">核心要点</h2>
+      <ul class="mt-4 space-y-2">
+        {
+          topic.keyPoints.map((point) => (
+            <li class="flex gap-2.5 text-sm leading-relaxed text-ink-700 dark:text-ink-300">
+              <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500" aria-hidden="true" />
+              {point}
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="mt-12" aria-label="判断标准">
+      <h2 class="text-2xl font-bold text-ink-900 dark:text-white">怎么判断哪一档适合你</h2>
+      <div class="mt-6 grid gap-5 sm:grid-cols-2">
+        {
+          topic.criteria.map((item, i) => (
+            <div class="rounded-lg border border-ink-100 p-5 dark:border-ink-700/40">
+              <h3 class="flex items-start gap-2.5 font-semibold text-ink-900 dark:text-white">
+                <span
+                  class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-50 text-xs font-bold text-brand-700 dark:bg-brand-900/40 dark:text-brand-300"
+                  aria-hidden="true"
+                >
+                  {i + 1}
+                </span>
+                {item.title}
+              </h3>
+              <p class="mt-2 text-sm leading-relaxed text-ink-500">{item.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    {
+      picks.length > 0 && (
+        <section class="mt-12" aria-label="精选档位">
+          <h2 class="text-2xl font-bold text-ink-900 dark:text-white">精选档位与推荐理由</h2>
+          <p class="mt-2 max-w-3xl text-sm text-ink-500">
+            以下为针对本专题需求筛选出的档位，每一条推荐理由都对应本页的判断标准；顺序不代表优劣排名。
+          </p>
+          <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {picks.map((pick, i) => (
+              <BrandCard
+                brand={pick.brand}
+                rank={i + 1}
+                reason={pick.reason}
+                placement={`topic-${topic.slug}`}
+              />
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <section class="mt-12" aria-label="横向对比">
+      <h2 class="text-2xl font-bold text-ink-900 dark:text-white">横向对比表</h2>
+      <BrandTable
+        brands={tableBrands}
+        caption={topic.tableCaption}
+        placement={`topic-table-${topic.slug}`}
+      />
+    </section>
+
+    <section class="mt-12 max-w-3xl" aria-label="常见疑问">
+      <h2 class="text-2xl font-bold text-ink-900 dark:text-white">关于{topic.primaryKeyword}的常见疑问</h2>
+      <div class="mt-6 space-y-6">
+        {topic.geoQuestions.map((item) => <GeoAnswer question={item.question} answer={item.answer} />)}
+      </div>
+    </section>
+
+    <div class="max-w-3xl">
+      <FaqSection faq={topic.faq} />
+    </div>
+
+    <section class="mt-12 max-w-3xl" aria-label="相关阅读">
+      <h2 class="text-xl font-bold text-ink-900 dark:text-white">相关阅读</h2>
+      <ul class="mt-4 grid gap-3 sm:grid-cols-2">
+        {
+          topic.related.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class="block rounded-lg border border-ink-100 px-4 py-3 text-sm font-medium text-ink-900 transition-colors duration-150 hover:border-brand-300 hover:text-brand-700 dark:border-ink-700/40 dark:text-white dark:hover:border-brand-700"
+              >
+                {link.label} →
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+</BaseLayout>
