@@ -18,7 +18,7 @@ import path from 'node:path';
 const DIST = path.resolve(process.cwd(), 'dist');
 const SITEMAP = path.join(DIST, 'sitemap-0.xml');
 const SITE_HOST = 'gsycloud.com';
-const INDEXNOW_KEY = 'a84ce29f9e457bf845eb5133f76df4d3';
+const INDEXNOW_KEY = 'eb40d87805194665b7b49042b8e60024';
 const KEY_LOCATION = `https://${SITE_HOST}/${INDEXNOW_KEY}.txt`;
 
 if (!existsSync(SITEMAP)) {

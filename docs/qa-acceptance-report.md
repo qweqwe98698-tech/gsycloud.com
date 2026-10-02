@@ -95,7 +95,7 @@ robots.txt: https://gsycloud.com/robots.txt
   Sitemap: https://gsycloud.com/sitemap-index.xml
 
 sitemap-index.xml → sitemap-0.xml：160 个 URL（已排除 20 个 noindex 页面），38 个 lastmod
-IndexNow 密钥文件：/a84ce29f9e457bf845eb5133f76df4d3.txt（已生成，随构建产物部署）
+IndexNow 密钥文件：/eb40d87805194665b7b49042b8e60024.txt（已生成，随构建产物部署）
 ```
 
 ---
