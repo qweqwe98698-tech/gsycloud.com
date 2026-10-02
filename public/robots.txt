@@ -1,3 +1,19 @@
+User-agent: Googlebot
+Allow: /
+Disallow: /search/
+
+User-agent: Bingbot
+Allow: /
+Disallow: /search/
+
+User-agent: Baiduspider
+Allow: /
+Disallow: /search/
+
+User-agent: Yisouspider
+Allow: /
+Disallow: /search/
+
 User-agent: *
 Allow: /
 Disallow: /search/
