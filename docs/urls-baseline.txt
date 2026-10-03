@@ -175,6 +175,7 @@
 /tutorials/shadowrocket/
 /tutorials/shadowrocket/getting-started/
 /tutorials/sing-box/
+/tutorials/sing-box/getting-started/
 /tutorials/v2rayn/
 /tutorials/v2rayn/getting-started/
 /tutorials/windows/

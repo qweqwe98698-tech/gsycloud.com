@@ -15,7 +15,8 @@
     "test": "vitest run",
     "check:links": "node scripts/check-links.mjs",
     "audit:seo": "node scripts/audit-seo.mjs",
-    "submit:indexnow": "node scripts/submit-indexnow.mjs"
+    "submit:indexnow": "node scripts/submit-indexnow.mjs",
+    "publish:matrix": "node scripts/auto-publish.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.11",

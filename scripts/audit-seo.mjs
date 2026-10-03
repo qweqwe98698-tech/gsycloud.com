@@ -177,9 +177,10 @@ for (const file of files) {
     }
   }
 
-  // 开发环境残留 / 占位内容（walk() 只收集 .html 页面，第三方 JS bundle 不在扫描范围内）
-  if (/\blocalhost\b|\b127\.0\.0\.1\b|\bexample\.com\b/.test(html)) {
-    errors.push(`${page}: 页面中出现 localhost / 127.0.0.1 / example.com 等开发环境地址`);
+  // 开发环境残留 / 占位内容（排除 <pre> 与 <code> 代码块内的示例代码，检查其余正文与链接）
+  const nonCodeHtml = html.replace(/<(pre|code)[\s\S]*?<\/\1>/g, '');
+  if (/\blocalhost\b|\b127\.0\.0\.1\b|\bexample\.com\b/.test(nonCodeHtml)) {
+    errors.push(`${page}: 页面正文/链接中出现 localhost / 127.0.0.1 / example.com 等开发环境残留`);
   }
   if (/(^|[^a-zA-Z])TODO([^a-zA-Z]|$)/.test(html.replace(/<script[\s\S]*?<\/script>/g, ''))) {
     warnings.push(`${page}: 正文中可能残留 TODO 标记，请人工确认`);

@@ -1,0 +1,254 @@
+[
+  {
+    "id": "sing-box-getting-started",
+    "collection": "tutorials",
+    "pillar": "sing-box",
+    "slug": "getting-started",
+    "primaryKeyword": "sing-box教程",
+    "secondaryKeywords": ["sing-box配置", "sing-box分流规则", "sing-box客户端使用"],
+    "title": "sing-box 客户端配置与分流规则完整教程：从入门到进阶",
+    "description": "sing-box 新一代通用代理客户端入门到进阶教程：全面解析 JSON 配置结构、入站与出站设置、Rule-Set 分流规则与 TUN 虚拟网卡配置，提供兼顾速度与隐私的生产级配置模板与排错指引。",
+    "category": "客户端教程",
+    "author": "gsycloud-network",
+    "contentType": "tutorial",
+    "dataStatus": "reference",
+    "targetAudience": "需要配置多平台现代代理客户端、追求高性能与精确分流规则的开发者与进阶用户",
+    "coreQuestions": [
+      "sing-box 与传统 Clash 相比在配置结构上有何本质不同？",
+      "如何正确配置 Rule-Set 远程规则集与本地直接分流？",
+      "开启 TUN 模式接管系统全局流量时有哪些 DNS 劫持与路由冲突陷阱？",
+      "遇到节点连接超时或特定域名直连失败时应如何排查？"
+    ]
+  },
+  {
+    "id": "v2rayn-routing-and-dns",
+    "collection": "tutorials",
+    "pillar": "v2rayn",
+    "slug": "routing-and-dns",
+    "primaryKeyword": "v2rayN路由设置",
+    "secondaryKeywords": ["v2rayN教程", "v2rayN分流规则", "v2rayN DNS防泄漏"],
+    "title": "v2rayN 路由分流与 DNS 防泄漏配置指南：Windows 代理环境调优",
+    "description": "Windows 平台经典代理客户端 v2rayN 路由分流与 DNS 深度优化教程：详解绕过大陆局域网规则、自定义路由集、TUN 模式配置与 DNS 防泄漏策略，解决国内直连减速与境外访问缓慢问题。",
+    "category": "客户端教程",
+    "author": "gsycloud-editorial",
+    "contentType": "tutorial",
+    "dataStatus": "reference",
+    "targetAudience": "在 Windows 办公与日常使用 v2rayN 客户端、对分流精度和网络稳定性有要求的用户",
+    "coreQuestions": [
+      "v2rayN 预设的几种路由模式（绕过大陆/全局/直连）底层匹配逻辑是什么？",
+      "如何添加自定义域名与 IP 路由规则，避免国内应用误走代理消耗流量？",
+      "Windows 系统代理与 TUN 模式的区别是什么，分别适用于什么软件？",
+      "如何配置远程 DNS 与直连 DNS，防止本地 DNS 污染同时避免境外解析泄漏？"
+    ]
+  },
+  {
+    "id": "mobile-data-cannot-connect",
+    "collection": "troubleshooting",
+    "pillar": null,
+    "slug": "mobile-data-cannot-connect",
+    "primaryKeyword": "手机流量无法连接",
+    "secondaryKeywords": ["蜂窝网络代理超时", "WiFi能用流量不能用", "手机机场连接失败"],
+    "title": "手机移动蜂窝流量无法连接代理节点的排查思路与修复方法",
+    "description": "排查手机在使用移动蜂窝数据（4G/5G）时代理节点全部超时、Wi-Fi 下正常但切换流量后断连的故障全流程：从运营商 APN 限制、IPv6 阻断、客户端 VPN 权限到端口封锁的完整解决方案。",
+    "category": "故障排查",
+    "author": "gsycloud-editorial",
+    "contentType": "tutorial",
+    "dataStatus": "reference",
+    "targetAudience": "遇到手机切到移动数据后代理突然失效、无法访问外网或持续转圈的用户",
+    "coreQuestions": [
+      "为什么同一个节点在家庭 Wi-Fi 下连接秒开，切到 4G/5G 蜂窝流量却全红超时？",
+      "移动、联通、电信运营商在蜂窝网络下的 IPv6 和 QoS 策略对代理连接有哪些干扰？",
+      "手机系统的省电策略、后台刷新限制以及 VPN 配置描述文件异常如何排查？",
+      "修改 APN 协议版本（IPv4/IPv6）以及更换节点传输端口如何解决流量断连？"
+    ]
+  },
+  {
+    "id": "v2rayn-timeout-solutions",
+    "collection": "troubleshooting",
+    "pillar": null,
+    "slug": "v2rayn-timeout-solutions",
+    "primaryKeyword": "v2rayN节点超时",
+    "secondaryKeywords": ["v2rayN测速负1", "v2rayN真连接延迟失败", "v2rayN无法上网"],
+    "title": "v2rayN 节点超时与测速异常（-1 / timeout）的原因定位与排错指南",
+    "description": "系统化解决 Windows v2rayN 客户端节点全部超时、真连接测速显示 -1、测试通过但浏览器无法打开网页的高频故障：从核心版本兼容、系统时间同步、代理端口冲突到分流配置错误的逐项排障手册。",
+    "category": "故障排查",
+    "author": "gsycloud-network",
+    "contentType": "tutorial",
+    "dataStatus": "reference",
+    "targetAudience": "使用 v2rayN 遇到节点测试变红、测速失败或网页无法加载的 Windows 用户",
+    "coreQuestions": [
+      "v2rayN 中「Tcping 延迟」与「真实下载速度/网页延迟」有何本质区别，为何前者通后者超时？",
+      "Windows 本地系统时钟微小偏差为何会导致 VMess/VLESS 协议握手直接失败？",
+      "第三方杀毒软件或 Windows Defender 防火墙如何静默拦截 Xray 内核网络端口？",
+      "核心版本（Xray-core vs v2fly-core）落后导致新协议节点无法握手时该如何升级？"
+    ]
+  },
+  {
+    "id": "hysteria2-vs-tuic",
+    "collection": "protocols",
+    "pillar": null,
+    "slug": "hysteria2-vs-tuic",
+    "primaryKeyword": "Hysteria2和TUIC区别",
+    "secondaryKeywords": ["UDP代理协议对比", "高丢包网络协议选择", "Hysteria2真实表现"],
+    "title": "Hysteria 2 与 TUIC 协议深度对比：高丢包恶劣网络下的传输表现与选型",
+    "description": "深度解析基于 UDP/QUIC 架构的新一代代理协议 Hysteria 2 与 TUIC 的底层原理差异：拥塞控制算法、握手开销、抗封锁伪装能力及在高延迟、高峰期丢包网络环境下的实测选型参考。",
+    "category": "协议知识",
+    "author": "gsycloud-network",
+    "contentType": "editorial",
+    "dataStatus": "reference",
+    "targetAudience": "关注代理协议底层演进、网络传输优化及希望在高丢包网络下获得流畅体验的技术用户",
+    "coreQuestions": [
+      "Hysteria 2 的自定义 Brutal 拥塞控制与 TUIC 的标准 BBR 在丢包处理上有何不同机制？",
+      "国内部分省份和运营商对 UDP 流量的 QoS 限速与阻断政策对这两个协议有何实际影响？",
+      "0-RTT 快速连接恢复与握手延迟对比：移动端频繁切换网络时哪个协议体验更平滑？",
+      "客户端与服务端资源开销对比：在老旧路由器或低性能移动设备上该如何取舍？"
+    ]
+  },
+  {
+    "id": "bgp-transit-vs-iplc",
+    "collection": "network",
+    "pillar": null,
+    "slug": "bgp-transit-vs-iplc",
+    "primaryKeyword": "BGP中转和IPLC区别",
+    "secondaryKeywords": ["专线和中转线路对比", "机场线路类型怎么选", "晚高峰网络稳定性"],
+    "title": "BGP 中转线路与 IPLC 专线全面对比：成本、晚高峰延迟与稳定性解析",
+    "description": "全方位剖析机场服务两大主流线路架构——BGP 优质中转与 IPLC 物理国际内网专线的技术区别：传输路径、物理过境点、晚高峰丢包抖动表现与成本差异，帮助用户依据真实预算与使用场景精准选购。",
+    "category": "线路与网络",
+    "author": "gsycloud-network",
+    "contentType": "editorial",
+    "dataStatus": "reference",
+    "targetAudience": "选购机场服务时面对复杂的线路名词（BGP、中转、专线、IPLC、IEPL）产生困惑的用户",
+    "coreQuestions": [
+      "BGP 入口公网隧道中转与 IPLC 点对点物理内网专线的数据包过境物理路径有何不同？",
+      "国际出口拥堵的晚高峰时段，BGP 中转与 IPLC 专线的丢包率和延迟波动相差多少？",
+      "为何 IPLC 专线每 GB 带宽成本远高于中转线路，哪些场景必须使用专线？",
+      "如何通过 traceroute / mtr 命令客观检测一条节点线路究竟是真专线还是普通公网中转？"
+    ]
+  },
+  {
+    "id": "gemini-network-guide",
+    "collection": "ai",
+    "pillar": "gemini",
+    "slug": "network-guide",
+    "primaryKeyword": "Gemini网络环境",
+    "secondaryKeywords": ["Google Gemini地区限制", "Gemini节点选择", "Gemini访问报错排查"],
+    "title": "Google Gemini 网络环境指南：地区可用性、账号限制与节点选择",
+    "description": "Google Gemini（原 Bard）官方服务地区限制与网络访问全景指南：详解 Google 账号地区归属与 IP 地理位置双重判定机制、常见 Country not supported 报错诱因与高纯净度出口节点配置方案。",
+    "category": "AI网络",
+    "author": "gsycloud-editorial",
+    "contentType": "editorial",
+    "dataStatus": "reference",
+    "targetAudience": "日常使用 Google Gemini / Gemini Advanced、遭遇地区限制或无法正常登录的技术从业者与日常用户",
+    "coreQuestions": [
+      "Gemini 的地区可用性判定除了看请求 IP 外，与 Google 账号的注册地区和归属有何关联？",
+      "为什么连上了美国或日本节点，打开 Gemini 仍然显示「当前国家/地区不可用」？",
+      "浏览器 Cookie、WebRTC 泄漏与系统语言时区对 Google 智能风控体系有何影响？",
+      "分流规则（Clash / v2rayN）中需要覆盖哪些关键 Google 域名才能防止流量跑偏？"
+    ]
+  },
+  {
+    "id": "subscription-security-guide",
+    "collection": "risk",
+    "pillar": null,
+    "slug": "subscription-security-and-leak-prevention",
+    "primaryKeyword": "订阅链接泄露风险",
+    "secondaryKeywords": ["机场订阅安全", "订阅链接被盗刷", "代理安全防范指南"],
+    "title": "机场订阅链接泄露风险自查与防护：节点安全、日志审计与防盗刷指南",
+    "description": "深度解析机场订阅链接泄露的技术风险与防御手段：别人拿到你的订阅链接能做什么？流量盗刷、连接拦截与隐私暴露原理，以及通过重置 Token、私有订阅转换与客户端安全设置筑牢防线。",
+    "category": "风险预警",
+    "author": "gsycloud-network",
+    "contentType": "editorial",
+    "dataStatus": "reference",
+    "targetAudience": "在公共平台、社交网络误发订阅链接，或担心自身代理连接与流量被他人盗用的用户",
+    "coreQuestions": [
+      "订阅链接中包含哪些敏感信息？他人获取后能否直接解出全部节点配置与密码？",
+      "第三方公开的「在线订阅转换器」是否存在记录和盗用用户节点流量的安全后门？",
+      "订阅被盗刷会导致什么后果？除了流量耗尽外是否会带来 IP 关联安全风险？",
+      "一旦发现订阅链接疑似泄露，必须在机场后台和客户端执行的紧急止损操作顺序是什么？"
+    ]
+  },
+  {
+    "id": "tiktok-nodes-guide",
+    "collection": "airport",
+    "pillar": null,
+    "slug": "tiktok-nodes-guide",
+    "primaryKeyword": "TikTok节点选择",
+    "secondaryKeywords": ["TikTok运营网络", "原生IP节点", "TikTok防零播放配置"],
+    "title": "TikTok 运营网络环境与节点选型：原生独享 IP、防零播放与养号策略",
+    "description": "面向跨境电商与海外自媒体运营的 TikTok 网络环境搭建完整指南：剖析平台对机房广播 IP 与原生住宅 IP 的风控检测模型，详解防零播放、防限流伪装度设置与高权重节点选型要点。",
+    "category": "机场选择",
+    "author": "gsycloud-editorial",
+    "contentType": "editorial",
+    "dataStatus": "reference",
+    "targetAudience": "从事 TikTok 跨境带货、海外短视频运营、常遭遇零播放或频繁风控的专业运营人员",
+    "coreQuestions": [
+      "TikTok 的客户端风控是如何通过 IP 类型（数据中心机房 vs 住宅家宽）判定账号真实度的？",
+      "为什么大量用户共用的廉价机场节点会导致新发布的视频出现普遍 0 播放？",
+      "手机设备层（SIM卡运营商信息、时区、语言、GPS虚拟定位、DNS）如何做到 100% 伪装？",
+      "运营多账号矩阵时，如何规划节点隔离与专线出口以避免关联封号？"
+    ]
+  },
+  {
+    "id": "reality-protocol-explained",
+    "collection": "protocols",
+    "pillar": null,
+    "slug": "reality-protocol-explained",
+    "primaryKeyword": "VLESS-Reality原理",
+    "secondaryKeywords": ["Reality协议配置", "防主动探测原理", "TLS证书伪装机制"],
+    "title": "VLESS-Reality 协议工作原理与防主动探测机制：技术解析与配置参考",
+    "description": "深入解析 VLESS-Reality 协议消除服务端 TLS 证书特征与防御主动探测的底层工程原理：SNI 借用、证书伪造验证、公私钥指纹隔离，以及相较于传统 WebSocket+TLS 模式的性能与抗干扰优势。",
+    "category": "协议知识",
+    "author": "gsycloud-network",
+    "contentType": "editorial",
+    "dataStatus": "reference",
+    "targetAudience": "对翻越防火墙底层抗封锁机制、TLS 协议演进及节点安全性有深入探究需求的技术人员",
+    "coreQuestions": [
+      "传统自签名证书和免费 Let's Encrypt 证书在主动探测下存在哪些明显的指纹特征？",
+      "Reality 是如何通过「借用」大公司的合法真实 TLS 证书来规避主动探测攻击的？",
+      "ShortId 与 PublicKey/PrivateKey 密钥对在客户端与服务端之间是如何完成身份握手认证的？",
+      "选择 Reality 的目标伪装域名（dest）有哪些严苛的技术条件，选错会有什么后果？"
+    ]
+  },
+  {
+    "id": "free-trial-airport-guide",
+    "collection": "airport",
+    "pillar": null,
+    "slug": "free-trial-airport-guide",
+    "primaryKeyword": "免费试用机场",
+    "secondaryKeywords": ["一元试用机场", "免费节点风险", "新手选机场避坑"],
+    "title": "免费试用与一元试用机场防坑指南：套路识别、隐私风险与止损策略",
+    "description": "深度起底网络上各种「免费试用」、「一元体验」机场服务背后的常见套路与潜在安全隐患：钓鱼收集个人邮箱密码、试用节点与付费节点分流偷跑、高额续费陷阱与理性的试水决策法则。",
+    "category": "机场选择",
+    "author": "gsycloud-editorial",
+    "contentType": "editorial",
+    "dataStatus": "reference",
+    "targetAudience": "初次接触代理服务、希望通过试用降低试错成本但担心个人信息与支付安全的新手用户",
+    "coreQuestions": [
+      "所谓「永久免费」或「1 元试用」的机场商家其商业盈利逻辑是什么，是否有隐私收集风险？",
+      "试用期间测速飞快、买完月付或年付立刻断流降速的「阴阳节点」手法是如何实现的？",
+      "使用真实个人邮箱与日常相同密码注册不知名试用平台会带来怎样的撞库风险？",
+      "新手如何通过查看运营时长、支付方式安全性与退款保障机制，安全低成本地测试一家机场？"
+    ]
+  },
+  {
+    "id": "grok-network-guide",
+    "collection": "ai",
+    "pillar": "grok",
+    "slug": "network-guide",
+    "primaryKeyword": "Grok网络环境",
+    "secondaryKeywords": ["xAI Grok访问限制", "Grok节点选择", "X Premium网络要求"],
+    "title": "xAI Grok 网络环境要求与节点选择：IP 纯净度与访问限制排查",
+    "description": "马斯克旗下 xAI Grok 的网络环境准入要求与节点选择完整指南：解析 X (Twitter) 平台整体风控与 Grok 独立调用的网络特征，排查登录死循环、人机验证失败与低延迟稳定节点选型思路。",
+    "category": "AI网络",
+    "author": "gsycloud-editorial",
+    "contentType": "editorial",
+    "dataStatus": "reference",
+    "targetAudience": "使用 X Premium 并频繁调用 Grok 对话与代码能力，面临网络波动或地区限制的用户",
+    "coreQuestions": [
+      "Grok 的地区开放范围与 ChatGPT、Claude 有何异同，其 IP 信誉判定基于什么机制？",
+      "网页端与手机 X 客户端调用 Grok 时，分流规则如果遗漏了哪些域名会导致报错中断？",
+      "数据中心共享 IP 导致频繁弹出 Cloudflare 验证码或提示请求过多时应如何处理？",
+      "使用哪些地区的节点可以在保证低延迟响应的同时获得最流畅的实时联网检索体验？"
+    ]
+  }
+]
