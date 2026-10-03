@@ -178,4 +178,5 @@
 /tutorials/sing-box/getting-started/
 /tutorials/v2rayn/
 /tutorials/v2rayn/getting-started/
+/tutorials/v2rayn/routing-and-dns/
 /tutorials/windows/
