@@ -164,6 +164,7 @@
 /troubleshooting/all-nodes-timeout/
 /troubleshooting/clash-subscription-update-failed/
 /troubleshooting/high-latency/
+/troubleshooting/mobile-data-cannot-connect/
 /troubleshooting/slow-speed-causes/
 /tutorials/
 /tutorials/android/
