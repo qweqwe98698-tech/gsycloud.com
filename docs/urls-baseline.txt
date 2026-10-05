@@ -166,6 +166,7 @@
 /troubleshooting/high-latency/
 /troubleshooting/mobile-data-cannot-connect/
 /troubleshooting/slow-speed-causes/
+/troubleshooting/v2rayn-timeout-solutions/
 /tutorials/
 /tutorials/android/
 /tutorials/clash/
