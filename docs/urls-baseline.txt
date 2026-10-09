@@ -41,6 +41,7 @@
 /nodes/what-is-a-proxy-node/
 /privacy/
 /protocols/
+/protocols/hysteria2-vs-tuic/
 /protocols/vless-vs-vmess/
 /reviews/
 /reviews/civetnet/
