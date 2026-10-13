@@ -31,6 +31,7 @@
 /disclaimer/
 /editorial-policy/
 /network/
+/network/bgp-transit-vs-iplc/
 /network/iplc-vs-iepl/
 /network/native-ip/
 /network/what-is-iplc/
