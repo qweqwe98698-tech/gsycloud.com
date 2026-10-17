@@ -7,6 +7,7 @@
 /ai/claude/
 /ai/claude/network-guide/
 /ai/gemini/
+/ai/gemini/network-guide/
 /ai/grok/
 /ai/perplexity/
 /airport/
