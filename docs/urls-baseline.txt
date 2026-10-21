@@ -64,6 +64,7 @@
 /reviews/yuzoucloud/
 /risk/
 /risk/exit-scam-warning-signs/
+/risk/subscription-security-and-leak-prevention/
 /search/
 /services/
 /sitemap/
