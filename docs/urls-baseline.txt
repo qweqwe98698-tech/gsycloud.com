@@ -22,6 +22,7 @@
 /airport/ranking/
 /airport/shadowrocket/
 /airport/streaming/
+/airport/tiktok-nodes-guide/
 /airport/unlimited/
 /airport/value/
 /authors/
