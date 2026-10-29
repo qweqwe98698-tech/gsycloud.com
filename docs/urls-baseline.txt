@@ -45,6 +45,7 @@
 /privacy/
 /protocols/
 /protocols/hysteria2-vs-tuic/
+/protocols/reality-protocol-explained/
 /protocols/vless-vs-vmess/
 /reviews/
 /reviews/civetnet/
