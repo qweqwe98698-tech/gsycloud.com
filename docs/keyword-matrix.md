@@ -46,7 +46,7 @@
 | 便宜机场推荐 / 低价机场 / 平价机场 / 学生党机场 | commercial | `/airport/budget/` | airport | live |
 | 按量计费机场 / 不限时机场 / 流量包机场 | commercial | `/airport/unlimited/` | airport | live |
 | 机场优惠码 / 机场折扣码 / 机场优惠活动 | transactional | `/airport/coupon/` | airport | live |
-| 免费试用机场 / 一元试用机场 | commercial | — | airport | planned |
+| 免费试用机场 / 一元试用机场 | commercial | /airport/free-trial-airport-guide/ | airport  | live |
 
 > `便宜机场推荐` 与 `高性价比机场` 意图相近但角度不同：前者是**品牌筛选页**（带档位列表），
 > 后者是**方法论文章**（讲成本逻辑）。两页互相内链，不得互换定位。

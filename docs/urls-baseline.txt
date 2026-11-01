@@ -17,6 +17,7 @@
 /airport/chatgpt/
 /airport/clash/
 /airport/coupon/
+/airport/free-trial-airport-guide/
 /airport/iepl/
 /airport/monthly/
 /airport/ranking/
