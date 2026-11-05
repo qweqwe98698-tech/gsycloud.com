@@ -9,6 +9,7 @@
 /ai/gemini/
 /ai/gemini/network-guide/
 /ai/grok/
+/ai/grok/network-guide/
 /ai/perplexity/
 /airport/
 /airport/2026/
