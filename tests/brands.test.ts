@@ -34,9 +34,11 @@ describe('品牌库数据完整性', () => {
     }
   });
 
-  it('推广链接均为 https 绝对地址', () => {
+  it('非空推广链接均为 https 绝对地址', () => {
     for (const brand of AIRPORT_BRANDS) {
-      expect(brand.affiliateUrl).toMatch(/^https:\/\//);
+      if (brand.affiliateUrl !== null) {
+        expect(brand.affiliateUrl).toMatch(/^https:\/\//);
+      }
     }
   });
 

@@ -13,23 +13,36 @@ const { brand, placement = 'card', size = 'sm', showCoupon = true } = Astro.prop
 ---
 
 <div class="flex flex-wrap items-center gap-2">
-  <a
-    href={brand.affiliateUrl}
-    rel="sponsored nofollow noopener"
-    target="_blank"
-    data-cta-placement={placement}
-    data-cta-brand={brand.slug}
-    class:list={[
-      'inline-flex items-center gap-1.5 rounded-md bg-brand-600 font-semibold text-white transition-colors duration-150 hover:bg-brand-700',
-      size === 'md' ? 'px-5 py-2.5 text-sm' : 'px-4 py-2 text-sm',
-    ]}
-  >
-    前往{brand.name}官网
-    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-      <path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"></path>
-    </svg>
-    <span class="sr-only">（推广链接，将在新窗口打开）</span>
-  </a>
+  {
+    brand.affiliateUrl ? (
+      <a
+        href={brand.affiliateUrl}
+        rel="sponsored nofollow noopener"
+        target="_blank"
+        data-cta-placement={placement}
+        data-cta-brand={brand.slug}
+        class:list={[
+          'inline-flex items-center gap-1.5 rounded-md bg-brand-600 font-semibold text-white transition-colors duration-150 hover:bg-brand-700',
+          size === 'md' ? 'px-5 py-2.5 text-sm' : 'px-4 py-2 text-sm',
+        ]}
+      >
+        前往{brand.name}官网
+        <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <span class="sr-only">（推广链接，将在新窗口打开）</span>
+      </a>
+    ) : (
+      <span
+        class:list={[
+          'inline-flex items-center rounded-md border border-surface-300 bg-surface-100 font-medium text-surface-600 dark:border-surface-700 dark:bg-surface-800 dark:text-surface-400',
+          size === 'md' ? 'px-5 py-2.5 text-sm' : 'px-4 py-2 text-sm',
+        ]}
+      >
+        暂未提供独立官网入口
+      </span>
+    )
+  }
   {
     showCoupon && brand.couponCode && (
       <span class="inline-flex items-center gap-1.5 rounded-md border border-dashed border-brand-300 bg-brand-50 px-3 py-2 text-xs font-medium text-brand-700 dark:border-brand-700 dark:bg-brand-900/30 dark:text-brand-300">

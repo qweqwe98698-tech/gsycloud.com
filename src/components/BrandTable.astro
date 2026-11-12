@@ -81,16 +81,22 @@ const { brands, caption, placement = 'table' } = Astro.props;
               )}
             </td>
             <td role="cell" class="cell-action px-4 py-3">
-              <a
-                href={brand.affiliateUrl}
-                rel="sponsored nofollow noopener"
-                target="_blank"
-                data-cta-placement={placement}
-                data-cta-brand={brand.slug}
-                class="font-medium text-brand-600 hover:underline dark:text-brand-400"
-              >
-                注册<span class="sr-only">（{brand.name} 推广链接，新窗口打开）</span>
-              </a>
+              {
+                brand.affiliateUrl ? (
+                  <a
+                    href={brand.affiliateUrl}
+                    rel="sponsored nofollow noopener"
+                    target="_blank"
+                    data-cta-placement={placement}
+                    data-cta-brand={brand.slug}
+                    class="font-medium text-brand-600 hover:underline dark:text-brand-400"
+                  >
+                    注册<span class="sr-only">（{brand.name} 推广链接，新窗口打开）</span>
+                  </a>
+                ) : (
+                  <span class="text-xs text-surface-500 dark:text-surface-400">暂未提供</span>
+                )
+              }
             </td>
           </tr>
         ))
