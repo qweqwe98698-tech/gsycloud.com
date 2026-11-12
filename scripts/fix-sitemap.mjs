@@ -33,7 +33,7 @@ const pageUrl = (file) => {
   let rel = path.relative(DIST, file).replaceAll('\\', '/');
   if (rel.endsWith('index.html')) rel = rel.slice(0, -'index.html'.length);
   else if (rel.endsWith('.html')) rel = rel.slice(0, -'.html'.length) + '/';
-  return `https://gsycloud.com/${rel}`;
+  return `https://gsycloud.com/${encodeURI(rel)}`;
 };
 
 if (!existsSync(SITEMAP)) {
@@ -50,10 +50,14 @@ for (const file of files) {
   const url = pageUrl(file);
   if (/<meta name="robots" content="noindex/.test(html)) {
     noindexUrls.add(url);
+    noindexUrls.add(decodeURI(url));
     continue;
   }
   const modMatch = html.match(/<meta property="article:modified_time" content="([^"]+)"/);
-  if (modMatch) lastmodByUrl.set(url, modMatch[1]);
+  if (modMatch) {
+    lastmodByUrl.set(url, modMatch[1]);
+    lastmodByUrl.set(decodeURI(url), modMatch[1]);
+  }
 }
 
 let sitemap = await readFile(SITEMAP, 'utf-8');
@@ -64,11 +68,11 @@ sitemap = sitemap.replace(/<url>(?:(?!<\/url>).)*?<\/url>/gs, (block) => {
   const locMatch = block.match(/<loc>([^<]+)<\/loc>/);
   const loc = locMatch?.[1];
   if (!loc) return block;
-  if (noindexUrls.has(loc)) {
+  if (noindexUrls.has(loc) || noindexUrls.has(decodeURI(loc)) || noindexUrls.has(encodeURI(loc))) {
     removed += 1;
     return '';
   }
-  const lastmod = lastmodByUrl.get(loc);
+  const lastmod = lastmodByUrl.get(loc) || lastmodByUrl.get(decodeURI(loc)) || lastmodByUrl.get(encodeURI(loc));
   if (lastmod && !block.includes('<lastmod>')) {
     stamped += 1;
     return block.replace('</loc>', `</loc><lastmod>${lastmod}</lastmod>`);

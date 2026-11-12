@@ -38,6 +38,7 @@
 | 机场月付 / 年付机场 / 付费周期怎么选 | commercial | `/airport/monthly/` | airport | live |
 | 高性价比机场 / 性价比高的机场 | commercial | `/airport/value/` | airport | live |
 | 机场品牌库 / 机场导航 / 机场大全 | commercial | `/brands/` | airport | live |
+| 低调机场 / 小众稳定机场 / 低调机场推荐 | commercial | `/airport/quiet-airports-guide/` | airport | live |
 
 ## P2 价格、套餐与优惠
 
@@ -55,10 +56,10 @@
 
 | Keyword | Intent | Target URL | Pillar | Status |
 | --- | --- | --- | --- | --- |
-| Clash机场推荐 / Clash订阅推荐 / 支持Clash的机场 | commercial | `/airport/clash/` | airport | live |
+| Clash Verge订阅 / Clash机场推荐 / Clash订阅链接购买 / 支持Clash Verge的机场 | commercial | `/airport/clash/` | airport | live |
 | Shadowrocket机场推荐 / 小火箭机场 / iOS机场推荐 | commercial | `/airport/shadowrocket/` | airport | live |
 | v2rayN机场推荐 / Windows机场推荐 | commercial | — | airport | planned |
-| Clash教程 / Clash怎么用 / Clash导入订阅 | informational | `/tutorials/clash/getting-started/` | clash | live |
+| Clash教程 / Clash Verge教程 / Clash导入订阅 | informational | `/tutorials/clash/getting-started/` | clash | live |
 | Shadowrocket教程 / 小火箭教程 | informational | `/tutorials/shadowrocket/getting-started/` | shadowrocket | live |
 | v2rayN教程 / v2rayN导入订阅 | informational | `/tutorials/v2rayn/getting-started/` | v2rayn | live |
 
@@ -82,41 +83,67 @@
 
 | Keyword | Intent | Target URL | Pillar | Status |
 | --- | --- | --- | --- | --- |
-| 专线机场推荐 / IEPL机场推荐 / IPLC机场推荐 | commercial | `/airport/iepl/` | airport | live |
-| IPLC是什么 / IPLC专线 | informational | `/network/what-is-iplc/` | — | live |
+| 专线机场推荐 / 专线机场 / IEPL机场推荐 / IPLC机场推荐 | commercial | `/airport/iepl/` | airport | live |
+| IPLC是什么 / IPLC专线 / 国际流量站iplc / iplc国际流量 | informational | `/network/what-is-iplc/` | — | live |
 | IPLC和IEPL区别 | informational | `/network/iplc-vs-iepl/` | — | live |
-| 原生IP / 原生IP和广播IP区别 | informational | `/network/native-ip/` | — | live |
-| VLESS和VMess区别 / 机场协议怎么选 | informational | `/protocols/vless-vs-vmess/` | — | live |
+| 原生IP / 原生IP和广播IP区别 / 原生ip是什么 | informational | `/network/native-ip/` | — | live |
+| VLESS和VMess区别 / VLESS是什么意思 / vless / 机场协议怎么选 | informational | `/protocols/vless-vs-vmess/` | — | live |
 | 原生IP机场推荐 / 家宽IP机场 | commercial | — | airport | planned |
 
 > **关键分工**：`IEPL机场推荐`（买什么）→ `/airport/iepl/`；`IEPL是什么`（知识）→ `/network/`。
 
-## P6 品牌词（16 家，模板化分配）
+## P6 品牌词（42 家精选，全覆盖承接）
 
-每个品牌页承接：`品牌名` + `品牌名机场` + `品牌名官网` + `品牌名怎么样` + `品牌名评测`
-+ `品牌名套餐` + `品牌名优惠码` + `品牌名好用吗` + `品牌名跑路了吗`
+每个品牌页承接：品牌名 + 品牌名机场 + 品牌名官网 + 品牌名怎么样 + 品牌名评测
++ 品牌名套餐 + 品牌名优惠码 + 品牌名好用吗 + 品牌名跑路了吗
 
-| 品牌 | Primary Keyword | Target URL | Status |
-| --- | --- | --- | --- |
-| 光速云（自有） | 光速云机场怎么样 | `/reviews/gsycloud/` | live |
-| 星岛梦 | 星岛梦机场怎么样 | `/reviews/xingdaomeng/` | live |
-| 灵猫网络 | 灵猫网络机场怎么样 | `/reviews/civetnet/` | live |
-| 飞猫云 | 飞猫云机场怎么样 | `/reviews/flycat/` | live |
-| 唯兔云 | 唯兔云机场怎么样 | `/reviews/weituyun/` | live |
-| 宇宙云 | 宇宙云机场怎么样 | `/reviews/yuzoucloud/` | live |
-| U1S1 | U1S1机场怎么样 | `/reviews/u1s1/` | live |
-| 极连云 | 极连云机场怎么样 | `/reviews/jilianyun/` | live |
-| 全球云 | 全球云机场怎么样 | `/reviews/quanqiuyun/` | live |
-| 光年梯 | 光年梯机场怎么样 | `/reviews/guangnianti/` | live |
-| 一翻云 | 一翻云机场怎么样 | `/reviews/yifanyun/` | live |
-| 二猫云 | 二猫云机场怎么样 | `/reviews/ermaoyun/` | live |
-| SOGO 云 | SOGO云机场怎么样 | `/reviews/sogoyun/` | live |
-| 可信云 | 可信云机场怎么样 | `/reviews/kexinyun/` | live |
-| 速界 | 速界机场怎么样 | `/reviews/sujie/` | live |
-| 快狸 | 快狸机场怎么样 | `/reviews/kuaili/` | live |
+| 排序 / 推荐位 | 品牌 | Primary Keyword | Target URL | 线路类型 | Status |
+| --- | --- | --- | --- | --- | --- |
+| Top 1 (自有主推) | 光速云 | 光速云机场怎么样 | /reviews/gsycloud/ | IEPL/企业级内网专线 | live |
+| Top 2 | 暮光加速 | 暮光加速机场怎么样 | /reviews/muguang/ | 企业级内网专线/IEPL | live |
+| Top 3 | 飞猫云 | 飞猫云机场怎么样 | /reviews/flycat/ | IEPL | live |
+| Top 4 | 微风网络 | 微风网络机场怎么样 | /reviews/weifeng/ | IEPL | live |
+| Top 5 | 大佬云 | 大佬云机场怎么样 | /reviews/dalaoyun/ | IEPL | live |
+| Top 6 | 星岛梦 | 星岛梦机场怎么样 | /reviews/xingdaomeng/ | 中转 | live |
+| Top 7 | 隐形人 | 隐形人机场怎么样 | /reviews/yinxingren/ | IEPL | live |
+| Top 8 | 二猫云 | 二猫云机场怎么样 | /reviews/ermaoyun/ | IEPL | live |
+| Top 9 | 无忧链接 | 无忧链接机场怎么样 | /reviews/wuyou/ | 中转/IEPL | live |
+| Top 10 | 唯兔云 | 唯兔云机场怎么样 | /reviews/weituyun/ | IPLC | live |
+| Top 11 | Firefly | Firefly机场怎么样 | /reviews/firefly/ | IPLC | live |
+| No. 12 | 闪跃 | 闪跃机场怎么样 | /reviews/shanyue/ | IEPL | live |
+| No. 13 | 闪电鼠 | 闪电鼠机场怎么样 | /reviews/shandianshu/ | IEPL | live |
+| No. 14 | 云界线 | 云界线机场怎么样 | /reviews/yunjiexian/ | IEPL | live |
+| No. 15 | 榴莲云 | 榴莲云机场怎么样 | /reviews/liulianyun/ | IEPL | live |
+| No. 16 | 神行加速 | 神行加速机场怎么样 | /reviews/shenxing/ | IEPL | live |
+| No. 17 | 环球梯 | 环球梯机场怎么样 | /reviews/huanqiuti/ | IEPL | live |
+| No. 18 | 梯子云 | 梯子云机场怎么样 | /reviews/tiziyun/ | IEPL | live |
+| No. 19 | CyberGuard | CyberGuard机场怎么样 | /reviews/cyberguard/ | IPLC | live |
+| No. 20 | 山水云 | 山水云机场怎么样 | /reviews/shanshuiyun/ | 中转 | live |
+| No. 21 | 宇宙云 | 宇宙云机场怎么样 | /reviews/yuzoucloud/ | 中转 | live |
+| No. 22 | 灵动云 | 灵动云机场怎么样 | /reviews/lingdongyun/ | IEPL | live |
+| No. 23 | 灵猫网络 | 灵猫网络机场怎么样 | /reviews/civetnet/ | 中转 | live |
+| No. 24 | 浪网 | 浪网机场怎么样 | /reviews/langwang/ | IEPL | live |
+| No. 25 | 一翻云 | 一翻云机场怎么样 | /reviews/yifanyun/ | IEPL | live |
+| No. 26 | FATCAT | FATCAT机场怎么样 | /reviews/fatcat/ | IEPL/IPLC | live |
+| No. 27 | 青云梯 | 青云梯机场怎么样 | /reviews/qingyunti/ | IPLC | live |
+| No. 28 | sslar | sslar机场怎么样 | /reviews/sslar/ | IEPL/企业级内网专线 | live |
+| No. 29 | U1S1 | U1S1机场怎么样 | /reviews/u1s1/ | 中转 | live |
+| No. 30 | 全球云 | 全球云机场怎么样 | /reviews/quanqiuyun/ | 中转 | live |
+| No. 31 | FlyingBird | FlyingBird机场怎么样 | /reviews/flyingbird/ | IPLC | live |
+| No. 32 | 龙猫云 | 龙猫云机场怎么样 | /reviews/longmaoyun/ | IPLC | live |
+| No. 33 | 速界 | 速界机场怎么样 | /reviews/sujie/ | 中转 | live |
+| No. 34 | 光年梯 | 光年梯机场怎么样 | /reviews/guangnianti/ | IEPL | live |
+| No. 35 | SOGO 云 | SOGO 云机场怎么样 | /reviews/sogoyun/ | IEPL | live |
+| No. 36 | 可信云 | 可信云机场怎么样 | /reviews/kexinyun/ | IEPL | live |
+| No. 37 | 快狸 | 快狸机场怎么样 | /reviews/kuaili/ | IEPL | live |
+| No. 38 | TNTCloud | TNTCloud机场怎么样 | /reviews/tntcloud/ | IPLC | live |
+| No. 39 | 极连云 | 极连云机场怎么样 | /reviews/jilianyun/ | IEPL | live |
+| No. 40 | EdgeNova | EdgeNova机场怎么样 | /reviews/edgenova/ | IPLC/直连 | live |
+| No. 41 | 白月光 | 白月光机场怎么样 | /reviews/baiyueguang/ | 中转 | live |
+| No. 42 | WgetCloud | WgetCloud机场怎么样 | /reviews/wgetcloud/ | 企业级内网专线/中转 | live |
 
-> 自有品牌 `光速云` 另有品牌实体页 `/services/`（承接 `GSY Cloud官网`、`光速云官网` 等
-> navigational 词）。`/services/` 与 `/reviews/gsycloud/` 意图不同：前者是官方服务说明，
+> 自有品牌 光速云 另有品牌实体页 /services/（承接 GSY Cloud官网、光速云官网 等
+> navigational 词）。/services/ 与 /reviews/gsycloud/ 意图不同：前者是官方服务说明，
 > 后者是评测视角，二者互相内链但不得内容重复。
 
 ## P7 故障排查
@@ -124,8 +151,8 @@
 | Keyword | Intent | Target URL | Status |
 | --- | --- | --- | --- |
 | 节点全部超时 / 机场节点timeout / 节点全红 | informational | `/troubleshooting/all-nodes-timeout/` | live |
-| Clash订阅更新失败 / 订阅链接打不开 | informational | `/troubleshooting/clash-subscription-update-failed/` | live |
-| 节点延迟高 / 延迟多少算正常 | informational | `/troubleshooting/high-latency/` | live |
+| Clash订阅更新失败 / Clash Verge订阅更新失败 / 订阅链接打不开 / 订阅更新timeout | informational | `/troubleshooting/clash-subscription-update-failed/` | live |
+| 节点延迟高 / 网络延迟高怎么办 / 太延迟 / 延迟多少算正常 | informational | `/troubleshooting/high-latency/` | live |
 | 节点速度慢 / 晚高峰速度慢 | informational | `/troubleshooting/slow-speed-causes/` | live |
 | 手机流量无法连接 / Wi-Fi能用流量不能用 | informational | — | planned |
 | v2rayN节点超时 / Shadowrocket无法连接 | informational | — | planned |

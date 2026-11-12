@@ -33,7 +33,7 @@ const noindex = archiveItems.length < INDEX_THRESHOLD;
 <ArchiveLayout
   title={`标签：${name}`}
   pageTitle={`${name} 相关文章｜标签｜${SITE.name}`}
-  description={`GSY Cloud 站内与「${name}」相关的全部文章列表。`}
+  description={`GSY Cloud 站内关于「${name}」的精选技术指南与评测文章归档，汇集节点测速、线路选购、客户端配置与网络优化相关专业内容，共收录 ${archiveItems.length} 篇相关资料。`}
   path={`/tags/${Astro.params.tag}/`}
   items={archiveItems}
   midCrumbs={[{ name: '标签', path: '/tags/' }]}

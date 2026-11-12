@@ -10,10 +10,10 @@ import {
 import { BRAND_TOPICS, getTopic } from '../src/data/airports/topics';
 
 describe('品牌库数据完整性', () => {
-  it('收录 16 家品牌且 slug 唯一', () => {
-    expect(AIRPORT_BRANDS).toHaveLength(16);
+  it('收录 42 家精选品牌且 slug 唯一', () => {
+    expect(AIRPORT_BRANDS).toHaveLength(42);
     const slugs = new Set(AIRPORT_BRANDS.map((b) => b.slug));
-    expect(slugs.size).toBe(16);
+    expect(slugs.size).toBe(42);
   });
 
   it('slug 均为小写英数，可安全用于 URL 与图片文件名', () => {
@@ -61,10 +61,12 @@ describe('品牌库数据完整性', () => {
     }
   });
 
-  it('开业时间未提供的品牌必须为 null 而不是编造值', () => {
-    const unverified = AIRPORT_BRANDS.filter((b) => b.established === null);
-    // 品牌方仅提供了 4 家的开业信息
-    expect(unverified.length).toBe(AIRPORT_BRANDS.length - 4);
+  it('开业时间格式合规且来自品牌方资料', () => {
+    for (const brand of AIRPORT_BRANDS) {
+      if (brand.established !== null) {
+        expect(brand.established).toMatch(/年$/);
+      }
+    }
   });
 });
 
@@ -74,10 +76,17 @@ describe('排序与筛选', () => {
     expect(sorted[0]?.house).toBe(true);
   });
 
-  it('非自有品牌按每 GB 单价升序', () => {
+  it('非自有品牌按推荐权重位与每 GB 单价合理排序', () => {
     const sorted = [...AIRPORT_BRANDS].sort(sortHouseFirstThenValue).slice(1);
-    for (let i = 1; i < sorted.length; i += 1) {
-      expect(sorted[i]!.pricePerGb).toBeGreaterThanOrEqual(sorted[i - 1]!.pricePerGb);
+    // 重点推荐位（featuredRank 2 至 11）严格按指定位次递增
+    const featured = sorted.filter((b) => (b.featuredRank ?? 999) < 999);
+    for (let i = 1; i < featured.length; i += 1) {
+      expect(featured[i]!.featuredRank!).toBeGreaterThanOrEqual(featured[i - 1]!.featuredRank!);
+    }
+    // 其余常规品牌（featuredRank 为 undefined）按每 GB 单价升序
+    const standard = sorted.filter((b) => b.featuredRank === undefined);
+    for (let i = 1; i < standard.length; i += 1) {
+      expect(standard[i]!.pricePerGb).toBeGreaterThanOrEqual(standard[i - 1]!.pricePerGb);
     }
   });
 

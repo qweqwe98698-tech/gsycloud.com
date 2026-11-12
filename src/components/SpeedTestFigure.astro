@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import type { AirportBrand } from '@data/airports/brands';
-import { speedTestImage } from '@utils/brand-images';
+import { speedTestImage, brandUnlockImages, brandExtraTestImages } from '@utils/brand-images';
 
 interface Props {
   brand: AirportBrand;
@@ -10,6 +10,8 @@ interface Props {
 }
 const { brand, caption } = Astro.props;
 const image = speedTestImage(brand.slug);
+const extraImages = brandExtraTestImages(brand.slug);
+const unlockImages = brandUnlockImages(brand.slug);
 ---
 
 {
@@ -31,10 +33,72 @@ const image = speedTestImage(brand.slug);
       </div>
       <figcaption class="mt-2 text-xs leading-relaxed text-ink-500">
         {caption}
+        <span class="mt-1 block font-mono text-[11px] text-ink-400 dark:text-ink-500">
+          测试基准环境：千兆三网骨干入口 · 本地宽带：电信 1000M / 联通 500M · 客户端：Clash Verge Rev 1.7+ / v2rayN 7.0+
+        </span>
         <span class="mt-1 block">
           说明：该图为测速面板导出结果，原始测速数据未做修改，测试时间已隐去。测速结果受线路波动、测试时段与本地网络影响，仅供参考，不代表你的实际体验。
         </span>
       </figcaption>
     </figure>
+  )
+}
+
+{
+  extraImages.map((extraImg, idx) => (
+    <figure class="not-prose my-8">
+      <div class="overflow-hidden rounded-lg border border-ink-100 dark:border-ink-700/40">
+        <Image
+          src={extraImg}
+          alt={`${brand.name}节点补充测速图 ${idx + 2}`}
+          title={`${brand.name} 节点补充测速实测数据`}
+          widths={[420, 700, extraImg.width]}
+          sizes="(max-width: 640px) 100vw, 700px"
+          format="webp"
+          quality={80}
+          loading="lazy"
+          decoding="async"
+          class="w-full"
+        />
+      </div>
+      <figcaption class="mt-2 text-xs leading-relaxed text-ink-500">
+        {brand.name} 补充测速样本记录 {idx + 2}。
+      </figcaption>
+    </figure>
+  ))
+}
+
+{
+  unlockImages.length > 0 && (
+    <section class="not-prose my-10 rounded-lg border border-brand-100 bg-brand-50/30 p-5 dark:border-brand-800/40 dark:bg-brand-950/20">
+      <h3 class="text-base font-bold text-ink-900 dark:text-white flex items-center gap-2">
+        <span class="h-2 w-2 rounded-full bg-brand-500" aria-hidden="true" />
+        {brand.name} 流媒体与 AI 解锁能力实测证据图集
+      </h3>
+      <p class="mt-1 text-xs text-ink-500">
+        包含 YouTube 4K、Netflix 地区库、Disney+、TikTok 播放以及 OpenAI ChatGPT / Claude 访问连通性实测截图。
+      </p>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        {unlockImages.map((unlockImg, idx) => (
+          <div class="overflow-hidden rounded-lg border border-ink-200 dark:border-ink-700/50">
+            <Image
+              src={unlockImg}
+              alt={`${brand.name} 流媒体与 AI 解锁实测记录 ${idx + 1}`}
+              title={`${brand.name} 解锁实测图 ${idx + 1}`}
+              widths={[380, 600, unlockImg.width]}
+              sizes="(max-width: 640px) 100vw, 400px"
+              format="webp"
+              quality={82}
+              loading="lazy"
+              decoding="async"
+              class="w-full"
+            />
+          </div>
+        ))}
+      </div>
+      <p class="mt-3 text-xs text-ink-500">
+        注：流媒体与 AI 服务风控策略实时演进，单次截图仅证明测试时刻的连通性，实际可用情况请以各节点最新状态为准。
+      </p>
+    </section>
   )
 }

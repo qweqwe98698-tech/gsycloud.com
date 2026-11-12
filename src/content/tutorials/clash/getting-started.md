@@ -1,16 +1,17 @@
 ---
-title: Clash 完整入门指南：从安装到成功连接
-description: 原版 Clash 停更后，主流选择是基于 Mihomo 内核的 Clash Verge 等客户端。本文给出从可信渠道下载、导入订阅、选择节点到开启系统代理的完整流程，并解释规则模式与 TUN 模式的取舍。
+title: Clash / Clash Verge 完整使用教程：从订阅导入到配置全指南
+description: 详解基于 Mihomo 内核的 Clash Verge / Clash 客户端从可信下载安装、订阅链接一键导入、节点延迟测速、规则分流选择到系统代理开启的完整实操教程。
 pubDate: 2026-08-10
 updatedDate: 2026-08-10
 category: 客户端教程
-tags: [Clash, Clash Verge, Mihomo]
+tags: [Clash, Clash Verge, Mihomo, 客户端教程]
 author: gsycloud-editorial
 primaryKeyword: Clash教程
-secondaryKeywords: [Clash使用教程, Clash Verge教程, Clash订阅导入]
+secondaryKeywords: [Clash Verge使用教程, Clash使用教程, Clash Verge教程, Clash订阅导入, Clash配置教程]
 searchIntent: informational
 pillar: clash
 relatedSlugs:
+  - airport/clash
   - troubleshooting/clash-subscription-update-failed
   - troubleshooting/all-nodes-timeout
   - tutorials/v2rayn/getting-started

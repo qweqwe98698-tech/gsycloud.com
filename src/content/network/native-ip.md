@@ -7,7 +7,7 @@ category: 线路知识
 tags: [原生IP, 广播IP, IP属性]
 author: gsycloud-network
 primaryKeyword: 原生IP
-secondaryKeywords: [原生IP是什么, 广播IP, 原生IP节点]
+secondaryKeywords: [原生IP是什么, 广播IP, 原生ip, 原生IP节点, 原生ip和机房ip区别, 原生IP检测]
 searchIntent: informational
 pillar: null
 relatedSlugs:
